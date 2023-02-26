@@ -1,19 +1,34 @@
 package handler
 
 import (
+	"ecoplant/model"
+	"ecoplant/repository"
+	"ecoplant/sdk/response"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-type postHandler struct {
-	DB *gorm.DB
+type userHandler struct {
+	Repository repository.UserRepository
 }
 
-// "Constructor" for postHandler
-func NewPostHandler(db *gorm.DB) postHandler {
-	return postHandler{db}
+func NewUserHandler(repo *repository.UserRepository) userHandler {
+	return userHandler{*repo}
 }
 
-func (h *postHandler) CreatePost(c *gin.Context) {
-	// ini diisi nanti
+func (h *userHandler) CreateUser(c *gin.Context) {
+	var user model.RegisterUser
+	err := c.ShouldBindJSON(&user)
+	if err != nil {
+		response.FailOrError(c, http.StatusBadRequest, "bad request", err)
+		return
+	}
+
+	result, err := h.Repository.CreateUser(user)
+	if err != nil {
+		response.FailOrError(c, http.StatusInternalServerError, "create user failed", err)
+		return
+	}
+	response.Success(c, http.StatusInternalServerError, "Success create user", result)
 }

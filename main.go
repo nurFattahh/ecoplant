@@ -3,6 +3,7 @@ package main
 import (
 	"ecoplant/database"
 	"ecoplant/handler"
+	"ecoplant/repository"
 	"log"
 	"os"
 
@@ -21,16 +22,12 @@ func main() {
 
 	db := database.InitDB()
 
+	userRepo := repository.NewUserRepository(db)
 	//handler
-	postHandler := handler.NewPostHandler(db)
+	userHandler := handler.NewUserHandler(&userRepo)
 
 	// Membuat route "/helloworld"
-	r.GET("/helloworld", func(c *gin.Context) {
-		// Mengirimkan string "hello world" sebagai response
-		c.String(200, "hello world")
-	})
-
-	r.POST("/post", postHandler.CreatePost)
+	r.POST("/register", userHandler.CreateUser)
 
 	// Menjalankan Gin Engine
 	r.Run(":" + port)
