@@ -26,9 +26,7 @@ func main() {
 	//handler
 	userHandler := handler.NewUserHandler(&userRepo)
 
-	// Membuat route "/helloworld"
 	r.POST("/register", userHandler.CreateUser)
 
-	// Menjalankan Gin Engine
 	r.Run(":" + port)
 }

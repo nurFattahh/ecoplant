@@ -35,3 +35,9 @@ func (r *UserRepository) CreateUser(model model.RegisterUser) (*entity.User, err
 	}
 	return &user, nil
 }
+
+func (r *UserRepository) FindByUsername(username string) (entity.User, error) {
+	user := entity.User{}
+	err := r.db.Where("username = ?", username).First(&user).Error
+	return user, err
+}

@@ -3,7 +3,10 @@ package handler
 import (
 	"ecoplant/model"
 	"ecoplant/repository"
+	"ecoplant/sdk/crypto"
+	sdk_jwt "ecoplant/sdk/jwt"
 	"ecoplant/sdk/response"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -31,4 +34,36 @@ func (h *userHandler) CreateUser(c *gin.Context) {
 		return
 	}
 	response.Success(c, http.StatusInternalServerError, "Success create user", result)
+}
+
+func (h *userHandler) LoginUser(c *gin.Context) {
+	var request model.LoginUser
+	err := c.ShouldBindJSON(&request)
+	if err != nil {
+		response.FailOrError(c, http.StatusBadRequest, "bad request", err)
+		return
+	}
+
+	user, err := h.Repository.FindByUsername(request.Username)
+	if err != nil {
+		response.FailOrError(c, http.StatusNotFound, "Email not found", err)
+		return
+	}
+
+	err = crypto.ValidateHash(request.Password, user.Password)
+	if err != nil {
+		msg := "wrong password"
+		response.FailOrError(c, http.StatusBadRequest, msg, errors.New(msg))
+		return
+	}
+
+	tokenJwt, err := sdk_jwt.GenerateToken(user)
+	if err != nil {
+		response.FailOrError(c, http.StatusInternalServerError, "create token failed", err)
+		return
+	}
+
+	response.Success(c, http.StatusOK, "login success", gin.H{
+		"token": tokenJwt,
+	})
 }
