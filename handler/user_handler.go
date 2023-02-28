@@ -33,7 +33,7 @@ func (h *userHandler) CreateUser(c *gin.Context) {
 		response.FailOrError(c, http.StatusInternalServerError, "create user failed", err)
 		return
 	}
-	response.Success(c, http.StatusInternalServerError, "Success create user", result)
+	response.Success(c, http.StatusCreated, "Success create user", result)
 }
 
 func (h *userHandler) LoginUser(c *gin.Context) {

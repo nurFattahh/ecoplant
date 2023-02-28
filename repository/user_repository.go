@@ -24,7 +24,8 @@ func (r *UserRepository) CreateUser(model model.RegisterUser) (*entity.User, err
 	}
 
 	var user entity.User = entity.User{
-		FullName: model.FullName,
+		Name:     model.Name,
+		Email:    model.Email,
 		Username: model.Username,
 		Password: hashPassword,
 	}

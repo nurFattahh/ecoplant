@@ -8,4 +8,6 @@ type Product struct {
 	Price       int
 	Rating      int
 	Description string
+	Seller      string
+	Picture     string
 }

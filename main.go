@@ -21,12 +21,21 @@ func main() {
 	r := gin.Default()
 
 	db := database.InitDB()
+	if err := database.AutoMigrate(db); err != nil {
+		log.Fatalln("auto migrate error,", err)
+	}
 
+	//repository
 	userRepo := repository.NewUserRepository(db)
+	productRepo := repository.NewProductRepository(db)
 	//handler
 	userHandler := handler.NewUserHandler(&userRepo)
+	productHandler := handler.NewProductRepository(&productRepo)
 
 	r.POST("/register", userHandler.CreateUser)
+	r.POST("/login", userHandler.LoginUser)
+	r.GET("/products", productHandler.GetAllProduct)
+	r.POST("product", productHandler.CreateProduct)
 
 	r.Run(":" + port)
 }
