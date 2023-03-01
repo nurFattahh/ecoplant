@@ -49,3 +49,40 @@ func (h *ProductHandler) GetAllProduct(c *gin.Context) {
 
 	response.Success(c, http.StatusOK, "Success getting all product", posts)
 }
+
+// func (h *ProductHandler) GetListProduct(ctx *gin.Context) {
+// 	var postParam model.PostParam
+
+// 	if err := h.BindParam(ctx, &postParam); err != nil {
+// 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request body", nil)
+// 		return
+// 	}
+
+// 	postParam.FormatPagination()
+
+// 	var posts []entity.Post
+
+// 	if err := h.db.
+// 		Model(entity.Product{}).
+// 		Limit(int(postParam.Limit)).
+// 		Offset(int(postParam.Offset)).
+// 		Find(&posts).Error; err != nil {
+// 		response.FailOrError(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 		return
+// 	}
+
+// 	var totalElements int64
+
+// 	if err := h.db.
+// 		Model(entity.Post{}).
+// 		Limit(int(postParam.Limit)).
+// 		Offset(int(postParam.Offset)).
+// 		Count(&totalElements).Error; err != nil {
+// 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 		return
+// 	}
+
+// 	postParam.ProcessPagination(totalElements)
+
+// 	h.Success(ctx, http.StatusOK, "Successfully get list post", posts, &postParam.PaginationParam)
+// }
