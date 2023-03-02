@@ -46,8 +46,11 @@ func (h *userHandler) LoginUser(c *gin.Context) {
 
 	user, err := h.Repository.FindByUsername(request.Username)
 	if err != nil {
-		response.FailOrError(c, http.StatusNotFound, "Email not found", err)
-		return
+		user, err = h.Repository.FindByEmail(request.Email)
+		if err != nil {
+			response.FailOrError(c, http.StatusNotFound, " email or username not found", err)
+			return
+		}
 	}
 
 	err = crypto.ValidateHash(request.Password, user.Password)

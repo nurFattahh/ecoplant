@@ -35,7 +35,9 @@ func main() {
 	r.POST("/register", userHandler.CreateUser)
 	r.POST("/login", userHandler.LoginUser)
 	r.GET("/products", productHandler.GetAllProduct)
-	r.POST("product", productHandler.CreateProduct)
+	r.POST("/product", productHandler.CreateProduct)
+	r.GET("product/:id", productHandler.GetProductByID)
+
 	// r.GET("listproduct", productHandler.GetListProduct)
 
 	r.Run(":" + port)

@@ -42,3 +42,9 @@ func (r *UserRepository) FindByUsername(username string) (entity.User, error) {
 	err := r.db.Where("username = ?", username).First(&user).Error
 	return user, err
 }
+
+func (r *UserRepository) FindByEmail(email string) (entity.User, error) {
+	user := entity.User{}
+	err := r.db.Where("email = ?", email).First(&user).Error
+	return user, err
+}

@@ -6,6 +6,7 @@ import (
 	"ecoplant/repository"
 	"ecoplant/sdk/response"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,7 +32,7 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 		Rating:      request.Rating,
 		Description: request.Description,
 	}
-	err := h.Repository.CreatePost(&product)
+	err := h.Repository.CreateProduct(&product)
 	if err != nil {
 		response.FailOrError(c, http.StatusInternalServerError, "Create product failed", err)
 		return
@@ -48,6 +49,26 @@ func (h *ProductHandler) GetAllProduct(c *gin.Context) {
 	}
 
 	response.Success(c, http.StatusOK, "Success getting all product", posts)
+}
+
+func (h *ProductHandler) GetProductByID(c *gin.Context) {
+	id := c.Param("id")
+
+	parsedID, err := strconv.ParseUint(id, 10, 64)
+
+	if err != nil {
+		response.FailOrError(c, http.StatusBadRequest, "invalid id params", err)
+		return
+	}
+
+	comment, err := h.Repository.GetProductByID(uint(parsedID))
+
+	if err != nil {
+		response.FailOrError(c, http.StatusNotFound, "comment not found", err)
+		return
+	}
+
+	response.Success(c, http.StatusOK, "comment found", comment)
 }
 
 // func (h *ProductHandler) GetListProduct(ctx *gin.Context) {
