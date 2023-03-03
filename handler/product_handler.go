@@ -74,14 +74,51 @@ func (h *ProductHandler) GetProductByID(c *gin.Context) {
 func (h *ProductHandler) GetProductByName(c *gin.Context) {
 	query := c.Param("name")
 
-	product, err := h.Repository.GetProductByName(query)
+	products, err := h.Repository.GetProductByName(query)
 
 	if err != nil {
 		response.FailOrError(c, http.StatusBadRequest, "invalid name product", err)
 		return
 	}
 
-	response.Success(c, http.StatusOK, "product found", product)
+	response.Success(c, http.StatusOK, "product found", products)
+}
+
+func (h *ProductHandler) UpdateProductByID(c *gin.Context) {
+	ID := c.Param("id")
+
+	var request model.UpdateProductRequest
+
+	if err := c.ShouldBindJSON(&request); err != nil {
+		response.FailOrError(c, http.StatusBadRequest, "body is invalid ..", err)
+		return
+	}
+
+	parsedID, _ := strconv.ParseUint(ID, 10, 64)
+
+	request = model.UpdateProductRequest{
+		Name:        request.Name,
+		Price:       request.Price,
+		Rating:      request.Rating,
+		Description: request.Description,
+		Merchant:    request.Merchant,
+		Picture:     request.Picture,
+	}
+
+	err := h.Repository.UpdateProduct(uint(parsedID), &request)
+	if err != nil {
+		response.FailOrError(c, http.StatusInternalServerError, "Update product failed", err)
+		return
+	}
+
+	product, err := h.Repository.GetProductByID(uint(parsedID))
+	if err != nil {
+		response.FailOrError(c, http.StatusNotFound, "Product not found", err)
+		return
+	}
+
+	//success
+	response.Success(c, http.StatusOK, "updated product successfully", product)
 }
 
 // func (h *ProductHandler) GetListProduct(ctx *gin.Context) {

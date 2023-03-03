@@ -2,6 +2,7 @@ package repository
 
 import (
 	"ecoplant/entity"
+	"ecoplant/model"
 
 	"gorm.io/gorm"
 )
@@ -38,13 +39,21 @@ func (r *ProductRepository) GetProductByID(ID uint) (*entity.Product, error) {
 	return &product, nil
 }
 
-func (r *ProductRepository) GetProductByName(name string) (*entity.Product, error) {
-	var product entity.Product
-	result := r.db.Where("name LIKE ?", "%"+name+"%").Find(&product)
+func (r *ProductRepository) GetProductByName(name string) (*[]entity.Product, error) {
+	var products []entity.Product
+	result := r.db.Where("name LIKE ?", "%"+name+"%").Find(&products)
 
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return &product, nil
+	return &products, nil
 
+}
+
+func (r *ProductRepository) UpdateProduct(ID uint, updateProduct *model.UpdateProductRequest) error {
+	var product entity.Product
+
+	err := r.db.Model(&product).Where("id = ?", ID).Updates(updateProduct).Error
+
+	return err
 }

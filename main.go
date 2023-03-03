@@ -38,6 +38,7 @@ func main() {
 	r.POST("/product", productHandler.CreateProduct)
 	r.GET("/product/:id", productHandler.GetProductByID)
 	r.GET("/product/search/:name", productHandler.GetProductByName)
+	// r.PATCH("/product/:id", productHandler.UpdateProductByID)
 
 	// r.GET("listproduct", productHandler.GetListProduct)
 
