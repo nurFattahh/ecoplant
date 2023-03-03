@@ -37,14 +37,8 @@ func (r *UserRepository) CreateUser(model model.RegisterUser) (*entity.User, err
 	return &user, nil
 }
 
-func (r *UserRepository) FindByUsername(username string) (entity.User, error) {
+func (r *UserRepository) FindByUsernameOrEmail(UsernameOrEmail string) (entity.User, error) {
 	user := entity.User{}
-	err := r.db.Where("username = ?", username).First(&user).Error
-	return user, err
-}
-
-func (r *UserRepository) FindByEmail(email string) (entity.User, error) {
-	user := entity.User{}
-	err := r.db.Where("email = ?", email).First(&user).Error
+	err := r.db.Where("username = ? or email = ?", UsernameOrEmail, UsernameOrEmail).First(&user).Error
 	return user, err
 }

@@ -36,7 +36,8 @@ func main() {
 	r.POST("/login", userHandler.LoginUser)
 	r.GET("/products", productHandler.GetAllProduct)
 	r.POST("/product", productHandler.CreateProduct)
-	r.GET("product/:id", productHandler.GetProductByID)
+	r.GET("/product/:id", productHandler.GetProductByID)
+	r.GET("/product/search/:name", productHandler.GetProductByName)
 
 	// r.GET("listproduct", productHandler.GetListProduct)
 

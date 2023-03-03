@@ -61,14 +61,27 @@ func (h *ProductHandler) GetProductByID(c *gin.Context) {
 		return
 	}
 
-	comment, err := h.Repository.GetProductByID(uint(parsedID))
+	product, err := h.Repository.GetProductByID(uint(parsedID))
 
 	if err != nil {
-		response.FailOrError(c, http.StatusNotFound, "comment not found", err)
+		response.FailOrError(c, http.StatusNotFound, "product not found", err)
 		return
 	}
 
-	response.Success(c, http.StatusOK, "comment found", comment)
+	response.Success(c, http.StatusOK, "product found", product)
+}
+
+func (h *ProductHandler) GetProductByName(c *gin.Context) {
+	query := c.Param("name")
+
+	product, err := h.Repository.GetProductByName(query)
+
+	if err != nil {
+		response.FailOrError(c, http.StatusBadRequest, "invalid name product", err)
+		return
+	}
+
+	response.Success(c, http.StatusOK, "product found", product)
 }
 
 // func (h *ProductHandler) GetListProduct(ctx *gin.Context) {

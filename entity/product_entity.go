@@ -4,10 +4,10 @@ import "gorm.io/gorm"
 
 type Product struct {
 	gorm.Model
-	Name        string
-	Price       int
-	Rating      int
-	Description string
-	Seller      string
-	Picture     string
+	Name        string `json:"name"`
+	Price       int    `json:"price"`
+	Rating      int    `json:"rating"`
+	Description string `json:"description"`
+	Merchant    string `json:"merchant"`
+	Picture     string `gorm:"type:VARCHAR(255)" json:"picture"`
 }

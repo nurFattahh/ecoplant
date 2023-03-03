@@ -37,3 +37,14 @@ func (r *ProductRepository) GetProductByID(ID uint) (*entity.Product, error) {
 
 	return &product, nil
 }
+
+func (r *ProductRepository) GetProductByName(name string) (*entity.Product, error) {
+	var product entity.Product
+	result := r.db.Where("name LIKE ?", "%"+name+"%").Find(&product)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &product, nil
+
+}
