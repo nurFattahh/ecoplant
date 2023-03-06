@@ -32,15 +32,17 @@ func main() {
 	userHandler := handler.NewUserHandler(&userRepo)
 	productHandler := handler.NewProductRepository(&productRepo)
 
-	r.POST("/register", userHandler.CreateUser)
-	r.POST("/login", userHandler.LoginUser)
+	//user
+	r.POST("/user/register", userHandler.CreateUser)
+	r.POST("/user/login", userHandler.LoginUser)
+
+	//product
 	r.GET("/products", productHandler.GetAllProduct)
 	r.POST("/product", productHandler.CreateProduct)
 	r.GET("/product/:id", productHandler.GetProductByID)
 	r.GET("/product/search/:name", productHandler.GetProductByName)
 	// r.PATCH("/product/:id", productHandler.UpdateProductByID)
-
-	// r.GET("listproduct", productHandler.GetListProduct)
+	// r.DELETE("product/:id", productHandler.DeleteProductById)
 
 	r.Run(":" + port)
 }

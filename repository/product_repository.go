@@ -15,16 +15,16 @@ func NewProductRepository(db *gorm.DB) ProductRepository {
 	return ProductRepository{db}
 }
 
-func (r *ProductRepository) CreateProduct(post *entity.Product) error {
-	return r.db.Create(post).Error
+func (r *ProductRepository) CreateProduct(product *entity.Product) error {
+	return r.db.Create(product).Error
 }
 
 func (r *ProductRepository) GetAllProduct() ([]entity.Product, error) {
-	var posts []entity.Product
+	var products []entity.Product
 
-	err := r.db.Find(&posts).Error
+	err := r.db.Find(&products).Error
 
-	return posts, err
+	return products, err
 }
 
 func (r *ProductRepository) GetProductByID(ID uint) (*entity.Product, error) {
@@ -39,9 +39,9 @@ func (r *ProductRepository) GetProductByID(ID uint) (*entity.Product, error) {
 	return &product, nil
 }
 
-func (r *ProductRepository) GetProductByName(name string) (*[]entity.Product, error) {
+func (r *ProductRepository) GetProductByName(query string) (*[]entity.Product, error) {
 	var products []entity.Product
-	result := r.db.Where("name LIKE ?", "%"+name+"%").Find(&products)
+	result := r.db.Where("name LIKE ?", "%"+query+"%").Find(&products)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -50,10 +50,18 @@ func (r *ProductRepository) GetProductByName(name string) (*[]entity.Product, er
 
 }
 
-func (r *ProductRepository) UpdateProduct(ID uint, updateProduct *model.UpdateProductRequest) error {
+func (r *ProductRepository) UpdateProduct(ID uint, updatePost *model.UpdateProduct) error {
 	var product entity.Product
 
-	err := r.db.Model(&product).Where("id = ?", ID).Updates(updateProduct).Error
+	err := r.db.Model(&product).Where("id = ?", ID).Updates(updatePost).Error
+
+	return err
+}
+
+func (r *ProductRepository) DeleteProduct(ID uint) error {
+	var product entity.Product
+
+	err := r.db.Delete(&product, ID).Error
 
 	return err
 }

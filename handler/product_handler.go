@@ -31,6 +31,8 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 		Price:       request.Price,
 		Rating:      request.Rating,
 		Description: request.Description,
+		Merchant:    request.Merchant,
+		Picture:     request.Picture,
 	}
 	err := h.Repository.CreateProduct(&product)
 	if err != nil {
@@ -38,7 +40,7 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 		return
 	}
 
-	response.Success(c, http.StatusCreated, "Post creation succeeded", request)
+	response.Success(c, http.StatusCreated, "Product creation succeeded", request)
 }
 
 func (h *ProductHandler) GetAllProduct(c *gin.Context) {
@@ -72,7 +74,7 @@ func (h *ProductHandler) GetProductByID(c *gin.Context) {
 }
 
 func (h *ProductHandler) GetProductByName(c *gin.Context) {
-	query := c.Param("name")
+	query := c.Query("name")
 
 	products, err := h.Repository.GetProductByName(query)
 
@@ -87,7 +89,7 @@ func (h *ProductHandler) GetProductByName(c *gin.Context) {
 func (h *ProductHandler) UpdateProductByID(c *gin.Context) {
 	ID := c.Param("id")
 
-	var request model.UpdateProductRequest
+	request := model.UpdateProduct{}
 
 	if err := c.ShouldBindJSON(&request); err != nil {
 		response.FailOrError(c, http.StatusBadRequest, "body is invalid ..", err)
@@ -96,7 +98,7 @@ func (h *ProductHandler) UpdateProductByID(c *gin.Context) {
 
 	parsedID, _ := strconv.ParseUint(ID, 10, 64)
 
-	request = model.UpdateProductRequest{
+	request = model.UpdateProduct{
 		Name:        request.Name,
 		Price:       request.Price,
 		Rating:      request.Rating,
@@ -121,39 +123,17 @@ func (h *ProductHandler) UpdateProductByID(c *gin.Context) {
 	response.Success(c, http.StatusOK, "updated product successfully", product)
 }
 
-// func (h *ProductHandler) GetListProduct(ctx *gin.Context) {
-// 	var postParam model.PostParam
+func (h *ProductHandler) DeleteProductById(c *gin.Context) {
+	ID := c.Param("id")
 
-// 	if err := h.BindParam(ctx, &postParam); err != nil {
-// 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request body", nil)
-// 		return
-// 	}
+	parsedID, _ := strconv.ParseUint(ID, 10, 64)
 
-// 	postParam.FormatPagination()
+	err := h.Repository.DeleteProduct(uint(parsedID))
 
-// 	var posts []entity.Post
+	if err != nil {
+		response.FailOrError(c, http.StatusInternalServerError, "delete product failed", err)
+		return
+	}
 
-// 	if err := h.db.
-// 		Model(entity.Product{}).
-// 		Limit(int(postParam.Limit)).
-// 		Offset(int(postParam.Offset)).
-// 		Find(&posts).Error; err != nil {
-// 		response.FailOrError(ctx, http.StatusInternalServerError, err.Error(), nil)
-// 		return
-// 	}
-
-// 	var totalElements int64
-
-// 	if err := h.db.
-// 		Model(entity.Post{}).
-// 		Limit(int(postParam.Limit)).
-// 		Offset(int(postParam.Offset)).
-// 		Count(&totalElements).Error; err != nil {
-// 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-// 		return
-// 	}
-
-// 	postParam.ProcessPagination(totalElements)
-
-// 	h.Success(ctx, http.StatusOK, "Successfully get list post", posts, &postParam.PaginationParam)
-// }
+	response.Success(c, http.StatusOK, "successfully deleted product", nil)
+}
