@@ -4,6 +4,8 @@ import (
 	"ecoplant/entity"
 	"ecoplant/model"
 
+	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"gorm.io/gorm"
 )
 
@@ -19,12 +21,26 @@ func (r *ProductRepository) CreateProduct(product *entity.Product) error {
 	return r.db.Create(product).Error
 }
 
-func (r *ProductRepository) GetAllProduct() ([]entity.Product, error) {
+func (r *ProductRepository) GetAllProduct(model *model.PaginParam) ([]entity.Product, int, error) {
 	var products []entity.Product
-
-	err := r.db.Find(&products).Error
-
-	return products, err
+	err := r.db.
+		Model(entity.Product{}).
+		Limit(model.Limit).
+		Offset(model.Offset).
+		Find(&products).Error
+	if err != nil {
+		return nil, 0, err
+	}
+	var totalElements int64
+	err = r.db.
+		Model(entity.Product{}).
+		Limit(model.Limit).
+		Offset(model.Offset).
+		Count(&totalElements).Error
+	if err != nil {
+		return nil, 0, err
+	}
+	return products, int(totalElements), err
 }
 
 func (r *ProductRepository) GetProductByID(ID uint) (*entity.Product, error) {
@@ -64,4 +80,15 @@ func (r *ProductRepository) DeleteProduct(ID uint) error {
 	err := r.db.Delete(&product, ID).Error
 
 	return err
+}
+
+func (h *ProductRepository) BindBody(c *gin.Context, body interface{}) interface{} {
+	return c.ShouldBindWith(body, binding.JSON)
+}
+
+func (h *ProductRepository) BindParam(c *gin.Context, param interface{}) error {
+	if err := c.ShouldBindUri(param); err != nil {
+		return err
+	}
+	return c.ShouldBindWith(param, binding.Query)
 }

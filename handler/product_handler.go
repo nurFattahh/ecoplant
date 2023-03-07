@@ -44,13 +44,19 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 }
 
 func (h *ProductHandler) GetAllProduct(c *gin.Context) {
-	posts, err := h.Repository.GetAllProduct()
-	if err != nil {
-		response.FailOrError(c, http.StatusNotFound, "fail getting product", err)
+	var productParam model.PaginParam
+	if err := h.Repository.BindParam(c, &productParam); err != nil {
+		response.FailOrError(c, http.StatusBadRequest, "invalid request body", err)
 		return
 	}
-
-	response.Success(c, http.StatusOK, "Success getting all product", posts)
+	productParam.FormatPagin()
+	products, totalElements, err := h.Repository.GetAllProduct(&productParam)
+	if err != nil {
+		response.FailOrError(c, http.StatusNotFound, "Places not found", err)
+		return
+	}
+	productParam.ProcessPagin(totalElements)
+	response.ResponsePagination(c, http.StatusOK, "Places found", products, &productParam)
 }
 
 func (h *ProductHandler) GetProductByID(c *gin.Context) {

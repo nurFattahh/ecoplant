@@ -2,7 +2,6 @@ package repository
 
 import (
 	"ecoplant/entity"
-	"ecoplant/model"
 
 	"gorm.io/gorm"
 )
@@ -25,12 +24,4 @@ func (r *CartRepository) GetProductByID(ID uint) (*entity.Product, error) {
 	}
 
 	return &product, nil
-}
-
-func (r *CartRepository) AddItem(item *model.CartItem) error {
-	return r.db.Create(item).Error
-}
-
-func (r *CartRepository) AddItemToCart(ID int, item *entity.Cart) error {
-	return r.db.Where("id = ?", ID).Create(item).Error
 }
