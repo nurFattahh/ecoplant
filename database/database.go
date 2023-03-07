@@ -30,5 +30,6 @@ func AutoMigrate(db *gorm.DB) error {
 		&entity.User{},
 		&entity.Product{},
 		&entity.Cart{},
+		// &entity.Transaction{},
 	)
 }

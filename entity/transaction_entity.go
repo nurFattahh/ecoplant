@@ -1,9 +1,9 @@
 package entity
 
-import "gorm.io/gorm"
+// import "gorm.io/gorm"
 
-type Transaction struct {
-	gorm.Model
-	UserID uint `json:"user_id"`
-	CartID uint `json:"cart_id"`
-}
+// type Transaction struct {
+// 	gorm.Model
+// 	UserID uint   `json:"user_id"`
+// 	Carts  []Cart `json:"cart_id"`
+// }
