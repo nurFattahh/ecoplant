@@ -44,7 +44,15 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 }
 
 func (h *ProductHandler) GetAllProduct(c *gin.Context) {
+	queryLimit := c.Query("limit")
+	queryPage := c.Query("page")
+
+	parseLimit, err := strconv.ParseInt(queryLimit, 10, 64)
+	parsePage, err := strconv.ParseInt(queryPage, 10, 64)
+
 	var productParam model.PaginParam
+	productParam.Limit = int(parseLimit)
+	productParam.Page = int(parsePage)
 	if err := h.Repository.BindParam(c, &productParam); err != nil {
 		response.FailOrError(c, http.StatusBadRequest, "invalid request body", err)
 		return
@@ -52,11 +60,11 @@ func (h *ProductHandler) GetAllProduct(c *gin.Context) {
 	productParam.FormatPagin()
 	products, totalElements, err := h.Repository.GetAllProduct(&productParam)
 	if err != nil {
-		response.FailOrError(c, http.StatusNotFound, "Places not found", err)
+		response.FailOrError(c, http.StatusNotFound, "Product not found", err)
 		return
 	}
 	productParam.ProcessPagin(totalElements)
-	response.ResponsePagination(c, http.StatusOK, "Places found", products, &productParam)
+	response.ResponsePagination(c, http.StatusOK, "Product found", products, &productParam)
 }
 
 func (h *ProductHandler) GetProductByID(c *gin.Context) {
