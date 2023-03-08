@@ -26,6 +26,6 @@ func (r *TransactionRepository) GetProductByID(ID uint) (*entity.Product, error)
 	return &product, nil
 }
 
-func (r *TransactionRepository) CreatePost(transaction *entity.Transaction) error {
+func (r *TransactionRepository) CreateTransaction(transaction *entity.Transaction) error {
 	return r.db.Create(transaction).Error
 }

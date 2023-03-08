@@ -61,7 +61,7 @@ func (h *TransactionHandler) CreateTransaction(c *gin.Context) {
 		ProductID: request.ProductID,
 	}
 
-	err = h.Repository.CreatePost(&transaction)
+	err = h.Repository.CreateTransaction(&transaction)
 	if err != nil {
 		response.FailOrError(c, http.StatusInternalServerError, "Transaction Failed", err)
 		return
