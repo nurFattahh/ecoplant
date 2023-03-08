@@ -8,8 +8,8 @@ type User struct {
 	Username    string        `gorm:"type:VARCHAR(50); uniqueIndex; NOT NULL" json:"username" `
 	Email       string        `gorm:"type:VARCHAR(50); NOT NULL" json:"email"`
 	Password    string        `gorm:"type:TEXT; NOT NULL" json:"-" `
-	Address     Address       `gorm:"type:VARCHAR(50)" json:"address"`
+	Address     Address       `json:"address"`
 	Phone       string        `gorm:"type:VARCHAR(50)" json:"phone"`
-	Carts       []Cart        `json:"carts"`
-	Transaction []Transaction `json:"transaction"`
+	Carts       []Cart        `json:"-"`
+	Transaction []Transaction `json:"-"`
 }

@@ -6,6 +6,6 @@ type Address struct {
 	Regency    string `json:"regency"`
 	District   string `json:"district"`
 	Home       string `json:"home"`
-	PostalCode uint   `json:"postal"`
-	UserID     uint   `json:"user_id"`
+	PostalCode string `json:"postal"`
+	UserID     uint   `json:"-"`
 }
