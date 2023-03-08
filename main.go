@@ -3,6 +3,7 @@ package main
 import (
 	"ecoplant/database"
 	"ecoplant/handler"
+	middleware "ecoplant/middleware"
 	"ecoplant/repository"
 	"log"
 	"os"
@@ -29,10 +30,13 @@ func main() {
 	userRepo := repository.NewUserRepository(db)
 	productRepo := repository.NewProductRepository(db)
 	// cartRepo := repository.NewCartRepository(db)
+	transactionRepo := repository.NewTransactionRepository(db)
+
 	//handler
 	userHandler := handler.NewUserHandler(&userRepo)
 	productHandler := handler.NewProductRepository(&productRepo)
 	// cartHandler := handler.NewCartHandler(&cartRepo)
+	transactionHandler := handler.NewTransactionHandler(&transactionRepo)
 
 	//user
 	r.POST("/user/register", userHandler.CreateUser)
@@ -46,7 +50,7 @@ func main() {
 	r.DELETE("/product/:id", productHandler.DeleteProductById)
 
 	//cart
-	// r.POST("/transaction", middleware.JwtMiddleware(), cartHandler.CreateTransaction)
+	r.POST("/transaction", middleware.JwtMiddleware(), transactionHandler.CreateTransaction)
 
 	r.Run(":" + port)
 }

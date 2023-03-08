@@ -3,12 +3,12 @@ package model
 import "math"
 
 type CreateProduct struct {
-	Name        string `json:"name"`
-	Price       int    `json:"price"`
-	Rating      int    `json:"rating"`
-	Description string `json:"description"`
-	Merchant    string `json:"merchant"`
-	Picture     string `gorm:"type:VARCHAR(255)" json:"picture"`
+	Name        string `json:"name" binding:"required"`
+	Price       int    `json:"price" binding:"required"`
+	Rating      int    `json:"rating" binding:"required"`
+	Description string `json:"description" binding:"required"`
+	Merchant    string `json:"merchant" binding:"required"`
+	Picture     string `gorm:"type:VARCHAR(255)" json:"picture" binding:"required"`
 }
 
 type UpdateProduct struct {
