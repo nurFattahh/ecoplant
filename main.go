@@ -43,10 +43,10 @@ func main() {
 	r.POST("/product", productHandler.CreateProduct)
 	r.GET("/product/:id", productHandler.GetProductByID)
 	r.GET("/product/search/:name", productHandler.GetProductByName)
-	// r.PATCH("/product/:id", productHandler.UpdateProductByID)
-	// r.DELETE("product/:id", productHandler.DeleteProductById)
+	r.DELETE("product/:id", productHandler.DeleteProductById)
 
 	//cart
+	// r.POST("/transaction", middleware.JwtMiddleware(), cartHandler.CreateTransaction)
 
 	r.Run(":" + port)
 }

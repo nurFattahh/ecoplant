@@ -47,8 +47,8 @@ func (h *ProductHandler) GetAllProduct(c *gin.Context) {
 	queryLimit := c.Query("limit")
 	queryPage := c.Query("page")
 
-	parseLimit, err := strconv.ParseInt(queryLimit, 10, 64)
-	parsePage, err := strconv.ParseInt(queryPage, 10, 64)
+	parseLimit, _ := strconv.ParseInt(queryLimit, 10, 64)
+	parsePage, _ := strconv.ParseInt(queryPage, 10, 64)
 
 	var productParam model.PaginParam
 	productParam.Limit = int(parseLimit)
