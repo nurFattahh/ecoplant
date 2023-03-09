@@ -21,7 +21,7 @@ func NewTransactionHandler(repo *repository.TransactionRepository) TransactionHa
 }
 
 func (h *TransactionHandler) CreateTransaction(c *gin.Context) {
-	// bind incoming http request
+
 	request := model.Checkout{}
 	if err := c.ShouldBindJSON(&request); err != nil {
 		response.FailOrError(c, http.StatusUnprocessableEntity, "Create transaction failed", err)
@@ -52,7 +52,7 @@ func (h *TransactionHandler) CreateTransaction(c *gin.Context) {
 	}
 
 	total := request.Quantity * product.Price
-	// create post
+
 	transaction := entity.Transaction{
 		Product:   *product,
 		Quantity:  request.Quantity,
@@ -67,6 +67,33 @@ func (h *TransactionHandler) CreateTransaction(c *gin.Context) {
 		return
 	}
 
-	//success response
 	response.Success(c, http.StatusCreated, "Transaction Success", transaction)
+}
+
+func (h *TransactionHandler) GetAllTransactionByBearer(c *gin.Context) {
+	result, exist := c.Get("user")
+	if !exist {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "no user key found", errors.New("erorr"))
+		return
+	}
+	claims, ok := result.(jwt.MapClaims)
+	if !ok {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error parsing ", errors.New("erorr"))
+		return
+	}
+
+	userIDc := claims["id"]
+	userIDf, ok := userIDc.(float64)
+	if !ok {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error get id", errors.New("erorr"))
+		return
+	}
+	transaction, err := h.Repository.GetAllTransactionByBearer(uint(userIDf))
+
+	if err != nil {
+		response.FailOrError(c, http.StatusNotFound, "Transaction not found", err)
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Transaction Found", transaction)
 }

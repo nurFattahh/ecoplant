@@ -39,9 +39,11 @@ func main() {
 	transactionHandler := handler.NewTransactionHandler(&transactionRepo)
 
 	//user
-	r.POST("/user/register", userHandler.CreateUser)
-	r.POST("/user/login", userHandler.LoginUser)
-	r.POST("/user/:id", userHandler.GetUserById)
+	r.POST("/user/register/", userHandler.CreateUser)
+	r.POST("/user/login/", userHandler.LoginUser)
+	r.POST("/user/", userHandler.GetUserById)
+	r.GET("/user/bearer/", middleware.JwtMiddleware(), userHandler.GetUserByBearer)
+	r.POST("/user/logout")
 
 	//product
 	r.GET("/products", productHandler.GetAllProduct)
@@ -51,7 +53,8 @@ func main() {
 	r.DELETE("/product/:id", productHandler.DeleteProductById)
 
 	//cart
-	r.POST("/transaction", middleware.JwtMiddleware(), transactionHandler.CreateTransaction)
+	r.POST("/transaction/", middleware.JwtMiddleware(), transactionHandler.CreateTransaction)
+	r.GET("/transaction/bearer/", middleware.JwtMiddleware(), transactionHandler.GetAllTransactionByBearer)
 
 	r.Run(":" + port)
 }

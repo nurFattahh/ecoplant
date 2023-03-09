@@ -4,6 +4,7 @@ import (
 	"ecoplant/entity"
 	"ecoplant/model"
 	"ecoplant/sdk/crypto"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -32,7 +33,7 @@ func (r *UserRepository) CreateUser(model model.RegisterUser) (*entity.User, err
 
 	result := r.db.Create(&user)
 	if result.Error != nil {
-		return nil, err
+		return nil, errors.New("USERNAME ALREADY IN USE")
 	}
 	return &user, nil
 }

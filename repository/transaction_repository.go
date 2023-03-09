@@ -29,3 +29,12 @@ func (r *TransactionRepository) GetProductByID(ID uint) (*entity.Product, error)
 func (r *TransactionRepository) CreateTransaction(transaction *entity.Transaction) error {
 	return r.db.Create(transaction).Error
 }
+
+func (r *TransactionRepository) GetAllTransactionByBearer(user uint) ([]entity.Transaction, error) {
+	var transaction []entity.Transaction
+	err := r.db.Model(entity.Transaction{}).Preload("Product").Find(&transaction).Error
+	if err != nil {
+		return nil, err
+	}
+	return transaction, nil
+}

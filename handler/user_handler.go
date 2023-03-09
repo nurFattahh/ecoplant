@@ -11,6 +11,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 type userHandler struct {
@@ -31,7 +32,7 @@ func (h *userHandler) CreateUser(c *gin.Context) {
 
 	result, err := h.Repository.CreateUser(user)
 	if err != nil {
-		response.FailOrError(c, http.StatusInternalServerError, "create user failed", err)
+		response.FailOrError(c, http.StatusInternalServerError, "Username already in use", err)
 		return
 	}
 	response.Success(c, http.StatusCreated, "Success create user", result)
@@ -78,4 +79,31 @@ func (h *userHandler) GetUserById(c *gin.Context) {
 		return
 	}
 	response.Success(c, http.StatusOK, "success get user", result)
+}
+
+func (h *userHandler) GetUserByBearer(c *gin.Context) {
+	result, exist := c.Get("user")
+	if !exist {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "no user key found", errors.New("Error"))
+		return
+	}
+	claims, ok := result.(jwt.MapClaims)
+	if !ok {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error parsing ", errors.New("Error"))
+		return
+	}
+
+	userIDc := claims["id"]
+	userIDf, ok := userIDc.(float64)
+	if !ok {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error get id", errors.New("Error"))
+		return
+	}
+
+	user, err := h.Repository.GetUserById(uint(userIDf))
+	if err != nil {
+		response.FailOrError(c, http.StatusBadRequest, "Failed get User", err)
+	}
+
+	response.Success(c, http.StatusCreated, "Transaction Success", user)
 }
