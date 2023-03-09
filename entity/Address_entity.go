@@ -7,5 +7,5 @@ type Address struct {
 	District   string `json:"district"`
 	Home       string `json:"home"`
 	PostalCode string `json:"postal"`
-	UserID     uint   `json:"user_id"`
+	UserID     uint   `json:"-"`
 }

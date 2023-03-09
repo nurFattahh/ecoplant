@@ -41,12 +41,13 @@ func main() {
 	//user
 	r.POST("/user/register", userHandler.CreateUser)
 	r.POST("/user/login", userHandler.LoginUser)
+	r.POST("/user/:id", userHandler.GetUserById)
 
 	//product
 	r.GET("/products", productHandler.GetAllProduct)
-	r.POST("/product", productHandler.CreateProduct)
+	r.POST("/product/", productHandler.CreateProduct)
 	r.GET("/product/:id", productHandler.GetProductByID)
-	r.GET("/product/search/:name", productHandler.GetProductByName)
+	r.GET("/product/search/", productHandler.GetProductByName)
 	r.DELETE("/product/:id", productHandler.DeleteProductById)
 
 	//cart

@@ -11,5 +11,6 @@ type User struct {
 	Address     Address       `json:"address"`
 	Phone       string        `gorm:"type:VARCHAR(50)" json:"phone"`
 	Carts       []Cart        `json:"-"`
-	Transaction []Transaction `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"-"`
+	Transaction []Transaction `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"transaction"`
+	Community   []Community   `gorm:"many2many:user_community;" json:"-"`
 }

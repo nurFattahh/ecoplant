@@ -8,6 +8,7 @@ import (
 	"ecoplant/sdk/response"
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -66,4 +67,15 @@ func (h *userHandler) LoginUser(c *gin.Context) {
 	response.Success(c, http.StatusOK, "login success", gin.H{
 		"token": tokenJwt,
 	})
+}
+
+func (h *userHandler) GetUserById(c *gin.Context) {
+	id := c.Query("id")
+	parsedID, _ := strconv.ParseUint(id, 10, 64)
+	result, err := h.Repository.GetUserById(uint(parsedID))
+	if err != nil {
+		response.FailOrError(c, http.StatusInternalServerError, "get user failed", err)
+		return
+	}
+	response.Success(c, http.StatusOK, "success get user", result)
 }

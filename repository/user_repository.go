@@ -42,3 +42,12 @@ func (r *UserRepository) FindByUsernameOrEmail(UsernameOrEmail string) (entity.U
 	err := r.db.Where("username = ? or email = ?", UsernameOrEmail, UsernameOrEmail).First(&user).Error
 	return user, err
 }
+
+func (r *UserRepository) GetUserById(id uint) (*entity.User, error) {
+	var user entity.User
+	result := r.db.Where("id = ?", id).Preload("Transaction").Take(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &user, nil
+}
