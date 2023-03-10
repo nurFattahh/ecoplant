@@ -32,7 +32,7 @@ func (h *userHandler) CreateUser(c *gin.Context) {
 
 	result, err := h.Repository.CreateUser(user)
 	if err != nil {
-		response.FailOrError(c, http.StatusInternalServerError, "Username already in use", err)
+		response.FailOrError(c, http.StatusInternalServerError, "Username atau email sudah digunakan", err)
 		return
 	}
 	response.Success(c, http.StatusCreated, "Success create user", result)
@@ -48,13 +48,13 @@ func (h *userHandler) LoginUser(c *gin.Context) {
 
 	user, err := h.Repository.FindByUsernameOrEmail(request.UsernameOrEmail)
 	if err != nil {
-		response.FailOrError(c, http.StatusNotFound, " email or username not found", err)
+		response.FailOrError(c, http.StatusNotFound, "Username atau email tidak ditemukan", err)
 		return
 	}
 
 	err = crypto.ValidateHash(request.Password, user.Password)
 	if err != nil {
-		msg := "wrong password"
+		msg := "kata sandi salah, silakan coba lagi"
 		response.FailOrError(c, http.StatusBadRequest, msg, errors.New(msg))
 		return
 	}
@@ -65,7 +65,7 @@ func (h *userHandler) LoginUser(c *gin.Context) {
 		return
 	}
 
-	response.Success(c, http.StatusOK, "login success", gin.H{
+	response.Success(c, http.StatusOK, "Berhasil masuk", gin.H{
 		"token": tokenJwt,
 	})
 }
@@ -105,5 +105,5 @@ func (h *userHandler) GetUserByBearer(c *gin.Context) {
 		response.FailOrError(c, http.StatusBadRequest, "Failed get User", err)
 	}
 
-	response.Success(c, http.StatusCreated, "Transaction Success", user)
+	response.Success(c, http.StatusCreated, "Get user Success", user)
 }

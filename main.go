@@ -43,7 +43,7 @@ func main() {
 	r.POST("/user/login/", userHandler.LoginUser)
 	r.POST("/user/", userHandler.GetUserById)
 	r.GET("/user/bearer/", middleware.JwtMiddleware(), userHandler.GetUserByBearer)
-	r.POST("/user/logout")
+	// r.DELETE("/user/logout", userHandler.UserLogout)
 
 	//product
 	r.GET("/products", productHandler.GetAllProduct)
@@ -52,9 +52,10 @@ func main() {
 	r.GET("/product/search/", productHandler.GetProductByName)
 	r.DELETE("/product/:id", productHandler.DeleteProductById)
 
-	//cart
+	//transaction
 	r.POST("/transaction/", middleware.JwtMiddleware(), transactionHandler.CreateTransaction)
 	r.GET("/transaction/bearer/", middleware.JwtMiddleware(), transactionHandler.GetAllTransactionByBearer)
+	r.PUT("/transaction/shipping/", middleware.JwtMiddleware(), transactionHandler.ShippingAddress)
 
 	r.Run(":" + port)
 }

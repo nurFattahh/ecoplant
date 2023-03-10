@@ -38,3 +38,20 @@ func (r *TransactionRepository) GetAllTransactionByBearer(user uint) ([]entity.T
 	}
 	return transaction, nil
 }
+
+func (r *TransactionRepository) ShippingAddress(ID uint, ShippingAddress *entity.ShippingAddress) error {
+	// var address entity.ShippingAddress
+
+	err := r.db.Where("shipping_address_id = ?", ID).Updates(&ShippingAddress).Error
+
+	return err
+}
+
+func (r *TransactionRepository) GetAddress(id uint) (*entity.ShippingAddress, error) {
+	var address entity.ShippingAddress
+	result := r.db.Where("shipping_address_id = ?", id).Take(&address)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &address, nil
+}

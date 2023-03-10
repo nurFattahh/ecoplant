@@ -51,12 +51,21 @@ func (h *TransactionHandler) CreateTransaction(c *gin.Context) {
 		response.FailOrError(c, http.StatusBadRequest, "Failed get product", err)
 	}
 
+	address, err := h.Repository.GetAddress(uint(userIDf))
+	if err != nil {
+		response.FailOrError(c, http.StatusInternalServerError, "Failed getting Address", err)
+		return
+	}
+
 	total := request.Quantity * product.Price
 
 	transaction := entity.Transaction{
 		Product:   *product,
 		Quantity:  request.Quantity,
 		Total:     float64(total),
+		Address:   *&address.RegencyDistrict,
+		Method:    request.Method,
+		Status:    request.Status,
 		UserID:    uint(userIDf),
 		ProductID: request.ProductID,
 	}
@@ -96,4 +105,47 @@ func (h *TransactionHandler) GetAllTransactionByBearer(c *gin.Context) {
 	}
 
 	response.Success(c, http.StatusOK, "Transaction Found", transaction)
+}
+
+func (h *TransactionHandler) ShippingAddress(c *gin.Context) {
+	request := model.GetAddress{}
+	if err := c.ShouldBindJSON(&request); err != nil {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "Create transaction failed", err)
+		return
+	}
+	result, exist := c.Get("user")
+	if !exist {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "no user key found", errors.New("erorr"))
+		return
+	}
+	claims, ok := result.(jwt.MapClaims)
+	if !ok {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error parsing ", errors.New("erorr"))
+		return
+	}
+
+	userIDc := claims["id"]
+	userIDf, ok := userIDc.(float64)
+	if !ok {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error get id", errors.New("erorr"))
+		return
+	}
+	address := entity.ShippingAddress{
+		ShippingAddressID: uint(userIDf),
+		Recipient:         request.Recipient,
+		Phone:             request.Phone,
+		Province:          request.Province,
+		RegencyDistrict:   request.RegencyDistrict,
+		Home:              request.Home,
+		PostalCode:        request.PostalCode,
+	}
+
+	err := h.Repository.ShippingAddress(uint(userIDf), &address)
+	if err != nil {
+		response.FailOrError(c, http.StatusInternalServerError, "Failed Post Address", err)
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Success Post Address", nil)
+
 }

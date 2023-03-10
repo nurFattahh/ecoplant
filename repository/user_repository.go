@@ -46,9 +46,18 @@ func (r *UserRepository) FindByUsernameOrEmail(UsernameOrEmail string) (entity.U
 
 func (r *UserRepository) GetUserById(id uint) (*entity.User, error) {
 	var user entity.User
-	result := r.db.Where("id = ?", id).Preload("Transaction").Take(&user)
+	result := r.db.Where("id = ?", id).Preload("Transaction").Preload("Address").Take(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 	return &user, nil
+}
+
+func (r *UserRepository) GetAddress(id uint) (*entity.ShippingAddress, error) {
+	var address entity.ShippingAddress
+	result := r.db.Where("id = ?", id).Take(&address)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &address, nil
 }
