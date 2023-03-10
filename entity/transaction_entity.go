@@ -9,7 +9,7 @@ type Transaction struct {
 	Total             float64 `json:"total"`
 	Status            string  `gorm:"default:'sudah dibayar'" json:"status"`
 	Address           string  `json:"address"`
-	Method            string  `json:"method"`
+	Method            string  `json:"method" binding:"required"`
 	UserID            uint    `json:"user_id"`
 	ProductID         uint    `json:"product_id"`
 	ShippingAddressID uint    `json:"shipping_address_id"`
