@@ -63,7 +63,7 @@ func (h *TransactionHandler) CreateTransaction(c *gin.Context) {
 		Product:   *product,
 		Quantity:  request.Quantity,
 		Total:     float64(total),
-		Address:   *&address.RegencyDistrict,
+		Address:   address.RegencyDistrict,
 		Method:    request.Method,
 		Status:    request.Status,
 		UserID:    uint(userIDf),

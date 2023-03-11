@@ -18,7 +18,7 @@ func main() {
 		log.Fatalln("failed to load env file")
 	}
 	port := os.Getenv("PORT")
-	// Membuat Gin Engine
+
 	r := gin.Default()
 
 	db := database.InitDB()
