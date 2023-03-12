@@ -35,6 +35,7 @@ func (h *userHandler) CreateUser(c *gin.Context) {
 		response.FailOrError(c, http.StatusInternalServerError, "Username atau email sudah digunakan", err)
 		return
 	}
+
 	response.Success(c, http.StatusCreated, "Success create user", result)
 }
 
