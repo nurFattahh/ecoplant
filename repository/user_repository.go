@@ -52,12 +52,3 @@ func (r *UserRepository) GetUserById(id uint) (*entity.User, error) {
 	}
 	return &user, nil
 }
-
-func (r *UserRepository) GetAddress(id uint) (*entity.ShippingAddress, error) {
-	var address entity.ShippingAddress
-	result := r.db.Where("id = ?", id).Take(&address)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return &address, nil
-}
