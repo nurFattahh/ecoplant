@@ -11,3 +11,9 @@ type Cart struct {
 	UserID      uint    `json:"user_id"`
 	ProductID   uint    `json:"product_id"`
 }
+
+type AddProduct struct {
+	ProductID   uint `json:"product_id"`
+	Quantity    int  `json:"quantity"`
+	IsCheckList bool `json:"is_checklist"`
+}

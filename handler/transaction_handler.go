@@ -2,7 +2,6 @@ package handler
 
 import (
 	"ecoplant/entity"
-	"ecoplant/model"
 	"ecoplant/repository"
 	"ecoplant/sdk/response"
 	"errors"
@@ -22,7 +21,7 @@ func NewTransactionHandler(repo *repository.TransactionRepository) TransactionHa
 
 func (h *TransactionHandler) CreateTransaction(c *gin.Context) {
 
-	request := model.Checkout{}
+	request := entity.Checkout{}
 	if err := c.ShouldBindJSON(&request); err != nil {
 		response.FailOrError(c, http.StatusUnprocessableEntity, "Create transaction failed", err)
 		return
@@ -143,7 +142,7 @@ func (h *TransactionHandler) GetAllTransactionByBearer(c *gin.Context) {
 }
 
 func (h *TransactionHandler) ShippingAddress(c *gin.Context) {
-	request := model.GetAddress{}
+	request := entity.GetAddress{}
 	if err := c.ShouldBindJSON(&request); err != nil {
 		response.FailOrError(c, http.StatusUnprocessableEntity, "Create transaction failed", err)
 		return

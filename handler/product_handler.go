@@ -2,7 +2,6 @@ package handler
 
 import (
 	"ecoplant/entity"
-	"ecoplant/model"
 	"ecoplant/repository"
 	"ecoplant/sdk/response"
 	"net/http"
@@ -20,7 +19,7 @@ func NewProductRepository(repo *repository.ProductRepository) ProductHandler {
 }
 
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
-	request := model.CreateProduct{}
+	request := entity.CreateProduct{}
 	if err := c.ShouldBindJSON(&request); err != nil {
 		response.FailOrError(c, http.StatusUnprocessableEntity, "Create product failed", err)
 		return
@@ -50,7 +49,7 @@ func (h *ProductHandler) GetAllProduct(c *gin.Context) {
 	parseLimit, _ := strconv.ParseInt(queryLimit, 10, 64)
 	parsePage, _ := strconv.ParseInt(queryPage, 10, 64)
 
-	var productParam model.PaginParam
+	var productParam entity.PaginParam
 	productParam.Limit = int(parseLimit)
 	productParam.Page = int(parsePage)
 	if err := h.Repository.BindParam(c, &productParam); err != nil {
@@ -125,7 +124,7 @@ func (h *ProductHandler) UpdateLocation(c *gin.Context) {
 		response.FailOrError(c, http.StatusBadRequest, "invalid id params", err)
 		return
 	}
-	request := model.UpdateLocation{}
+	request := entity.UpdateLocation{}
 	if err := c.ShouldBindJSON(&request); err != nil {
 		response.FailOrError(c, http.StatusUnprocessableEntity, "Failed get request", err)
 		return

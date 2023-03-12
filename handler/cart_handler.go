@@ -2,7 +2,6 @@ package handler
 
 import (
 	"ecoplant/entity"
-	"ecoplant/model"
 	"ecoplant/repository"
 	"ecoplant/sdk/response"
 	"errors"
@@ -21,7 +20,7 @@ func NewCartHandler(repo *repository.CartRepository) CartHandler {
 }
 
 func (h *CartHandler) CreateProductForCart(c *gin.Context) {
-	request := model.AddProduct{}
+	request := entity.AddProduct{}
 	if err := c.ShouldBindJSON(&request); err != nil {
 		response.FailOrError(c, http.StatusUnprocessableEntity, "Create transaction failed", err)
 		return

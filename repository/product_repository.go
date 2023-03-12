@@ -2,7 +2,6 @@ package repository
 
 import (
 	"ecoplant/entity"
-	"ecoplant/model"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -21,7 +20,7 @@ func (r *ProductRepository) CreateProduct(product *entity.Product) error {
 	return r.db.Create(product).Error
 }
 
-func (r *ProductRepository) GetAllProduct(model *model.PaginParam) ([]entity.Product, int, error) {
+func (r *ProductRepository) GetAllProduct(model *entity.PaginParam) ([]entity.Product, int, error) {
 	var products []entity.Product
 	err := r.db.
 		Model(entity.Product{}).

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"ecoplant/model"
+	"ecoplant/entity"
 	"ecoplant/repository"
 	"ecoplant/sdk/crypto"
 	sdk_jwt "ecoplant/sdk/jwt"
@@ -23,7 +23,7 @@ func NewUserHandler(repo *repository.UserRepository) userHandler {
 }
 
 func (h *userHandler) CreateUser(c *gin.Context) {
-	var user model.RegisterUser
+	var user entity.RegisterUser
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
 		response.FailOrError(c, http.StatusBadRequest, "bad request", err)
@@ -39,7 +39,7 @@ func (h *userHandler) CreateUser(c *gin.Context) {
 }
 
 func (h *userHandler) LoginUser(c *gin.Context) {
-	var request model.LoginUser
+	var request entity.LoginUser
 	err := c.ShouldBindJSON(&request)
 	if err != nil {
 		response.FailOrError(c, http.StatusBadRequest, "bad request", err)

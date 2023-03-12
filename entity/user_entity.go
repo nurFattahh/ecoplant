@@ -14,3 +14,15 @@ type User struct {
 	Transaction       []Transaction   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"transaction"`
 	ShippingAddressID uint            `json:"shipping_address_id"`
 }
+
+type RegisterUser struct {
+	Name     string `json:"name" binding:"required"`
+	Email    string `json:"email" binding:"required"`
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+type LoginUser struct {
+	UsernameOrEmail string `json:"username/email"`
+	Password        string `json:"password"`
+}

@@ -2,7 +2,6 @@ package repository
 
 import (
 	"ecoplant/entity"
-	"ecoplant/model"
 	"ecoplant/sdk/crypto"
 	"errors"
 
@@ -17,7 +16,7 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 	return UserRepository{db}
 }
 
-func (r *UserRepository) CreateUser(model model.RegisterUser) (*entity.User, error) {
+func (r *UserRepository) CreateUser(model entity.RegisterUser) (*entity.User, error) {
 	hashPassword, err := crypto.HashValue(model.Password)
 
 	if err != nil {
