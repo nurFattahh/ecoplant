@@ -40,8 +40,6 @@ func (r *TransactionRepository) GetAllTransactionByBearer(user uint) ([]entity.T
 }
 
 func (r *TransactionRepository) ShippingAddress(ID uint, ShippingAddress *entity.ShippingAddress) error {
-	// var address entity.ShippingAddress
-
 	err := r.db.Where("shipping_address_id = ?", ID).Updates(&ShippingAddress).Error
 
 	return err

@@ -57,17 +57,52 @@ func (h *TransactionHandler) CreateTransaction(c *gin.Context) {
 		return
 	}
 
-	total := request.Quantity * product.Price
+	meth := request.PaymentMethod
+	var method string
+	switch meth {
+	case 1:
+		method = "Bank BCA"
+	case 2:
+		method = "Bank BRI"
+	case 3:
+		method = "Bank Mandiri"
+	}
+
+	shipping := request.ShippingMethod
+	var shippingMethod string
+	var paymentPrice float64
+	var estimate string
+
+	switch shipping {
+	case 1:
+		shippingMethod = "JNE Regular"
+		paymentPrice = 12000
+		estimate = "3 - 5 hari"
+	case 2:
+		shippingMethod = "J&T Express"
+		paymentPrice = 20000
+		estimate = "3 - 5 hari"
+	case 3:
+		shippingMethod = "Sicepat Ekonomi"
+		paymentPrice = 18000
+		estimate = "3 - 5 hari"
+	}
+	TotalProduct := request.Quantity * product.Price
+	total := request.Quantity*product.Price + int(paymentPrice)
 
 	transaction := entity.Transaction{
-		Product:   *product,
-		Quantity:  request.Quantity,
-		Total:     float64(total),
-		Address:   *&address.RegencyDistrict,
-		Method:    request.Method,
-		Status:    request.Status,
-		UserID:    uint(userIDf),
-		ProductID: request.ProductID,
+		Product:        *product,
+		Quantity:       request.Quantity,
+		TotalProduct:   float64(TotalProduct),
+		Address:        address.RegencyDistrict,
+		PaymentMethod:  method,
+		PaymentPrice:   paymentPrice,
+		ShippingMethod: shippingMethod,
+		Estimate:       estimate,
+		Status:         request.Status,
+		UserID:         uint(userIDf),
+		ProductID:      request.ProductID,
+		Total:          float64(total),
 	}
 
 	err = h.Repository.CreateTransaction(&transaction)

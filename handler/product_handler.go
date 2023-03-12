@@ -115,3 +115,28 @@ func (h *ProductHandler) DeleteProductById(c *gin.Context) {
 
 	response.Success(c, http.StatusOK, "successfully deleted product", nil)
 }
+
+func (h *ProductHandler) UpdateLocation(c *gin.Context) {
+	id := c.Param("id")
+
+	parsedID, err := strconv.ParseUint(id, 10, 64)
+
+	if err != nil {
+		response.FailOrError(c, http.StatusBadRequest, "invalid id params", err)
+		return
+	}
+	request := model.UpdateLocation{}
+	if err := c.ShouldBindJSON(&request); err != nil {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "Failed get request", err)
+		return
+	}
+
+	err = h.Repository.UpdateProduct(uint(parsedID), request.Location)
+	if err != nil {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "Update product failed", err)
+		return
+	}
+
+	response.Success(c, http.StatusOK, "successfully update product", request)
+
+}

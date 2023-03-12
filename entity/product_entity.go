@@ -10,4 +10,5 @@ type Product struct {
 	Description string `json:"description"`
 	Merchant    string `json:"merchant"`
 	Picture     string `gorm:"type:VARCHAR(255)" json:"picture"`
+	Location    string `gorm:"location"`
 }

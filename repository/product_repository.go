@@ -66,10 +66,9 @@ func (r *ProductRepository) GetProductByName(query string) (*[]entity.Product, e
 
 }
 
-func (r *ProductRepository) UpdateProduct(ID uint, updatePost *model.UpdateProduct) error {
+func (r *ProductRepository) UpdateProduct(ID uint, updateLocation string) error {
 	var product entity.Product
-
-	err := r.db.Model(&product).Where("id = ?", ID).Updates(updatePost).Error
+	err := r.db.Model(&product).Where("id = ?", ID).Update("location", updateLocation).Error
 
 	return err
 }

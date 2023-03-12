@@ -26,6 +26,15 @@ func (r *CartRepository) GetProductByID(ID uint) (*entity.Product, error) {
 	return &product, nil
 }
 
-func (r *CartRepository) CreateCart(transaction *entity.Transaction) error {
-	return r.db.Create(transaction).Error
+func (r *CartRepository) AddProductToCart(input *entity.Cart) error {
+	return r.db.Create(&input).Error
+}
+
+func (r *CartRepository) GetAllProductInCart(ID uint) ([]entity.Cart, error) {
+	var cart []entity.Cart
+	err := r.db.Model(entity.Cart{}).Preload("Product").Find(&cart).Error
+	if err != nil {
+		return nil, err
+	}
+	return cart, nil
 }

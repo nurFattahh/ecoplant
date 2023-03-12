@@ -29,13 +29,13 @@ func main() {
 	//repository
 	userRepo := repository.NewUserRepository(db)
 	productRepo := repository.NewProductRepository(db)
-	// cartRepo := repository.NewCartRepository(db)
+	cartRepo := repository.NewCartRepository(db)
 	transactionRepo := repository.NewTransactionRepository(db)
 
 	//handler
 	userHandler := handler.NewUserHandler(&userRepo)
 	productHandler := handler.NewProductRepository(&productRepo)
-	// cartHandler := handler.NewCartHandler(&cartRepo)
+	cartHandler := handler.NewCartHandler(&cartRepo)
 	transactionHandler := handler.NewTransactionHandler(&transactionRepo)
 
 	//user
@@ -43,7 +43,6 @@ func main() {
 	r.POST("/user/login/", userHandler.LoginUser)
 	r.POST("/user/", userHandler.GetUserById)
 	r.GET("/user/bearer/", middleware.JwtMiddleware(), userHandler.GetUserByBearer)
-	// r.DELETE("/user/logout", userHandler.UserLogout)
 
 	//product
 	r.GET("/products", productHandler.GetAllProduct)
@@ -51,6 +50,11 @@ func main() {
 	r.GET("/product/:id", productHandler.GetProductByID)
 	r.GET("/product/search/", productHandler.GetProductByName)
 	r.DELETE("/product/:id", productHandler.DeleteProductById)
+	r.PATCH("/product/update/:id", productHandler.UpdateLocation)
+
+	//cart
+	r.POST("/cart/add/", middleware.JwtMiddleware(), cartHandler.CreateProductForCart)
+	r.GET("/carts/", middleware.JwtMiddleware(), cartHandler.GetAllProductInCart)
 
 	//transaction
 	r.POST("/transaction/", middleware.JwtMiddleware(), transactionHandler.CreateTransaction)

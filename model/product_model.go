@@ -30,6 +30,10 @@ type PaginParam struct {
 	CurrentPage     int `json:"current_page"`
 }
 
+type UpdateLocation struct {
+	Location string `gorm:"location"`
+}
+
 func (pp *PaginParam) FormatPagin() {
 	if pp.Limit == 0 {
 		pp.Limit = 9

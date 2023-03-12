@@ -1,7 +1,7 @@
 package entity
 
 type ShippingAddress struct {
-	ShippingAddressID uint   `gorm:"autoIncrement;unique" json:"id"`
+	ShippingAddressID uint   `gorm:"primaryKey" json:"id"`
 	Recipient         string `json:"recipient"`
 	Phone             string `json:"phone"`
 	Province          string `json:"province"`
