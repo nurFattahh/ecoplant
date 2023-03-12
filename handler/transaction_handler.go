@@ -91,18 +91,14 @@ func (h *TransactionHandler) CreateTransaction(c *gin.Context) {
 	total := request.Quantity*product.Price + int(paymentPrice)
 
 	transaction := entity.Transaction{
-		Product:        *product,
-		Quantity:       request.Quantity,
-		TotalProduct:   float64(TotalProduct),
-		Address:        address.RegencyDistrict,
-		PaymentMethod:  method,
-		PaymentPrice:   paymentPrice,
-		ShippingMethod: shippingMethod,
-		Estimate:       estimate,
-		Status:         request.Status,
-		UserID:         uint(userIDf),
-		ProductID:      request.ProductID,
-		Total:          float64(total),
+		Product:   *product,
+		Quantity:  request.Quantity,
+		Total:     float64(total),
+		Address:   *&address.RegencyDistrict,
+		Method:    request.Method,
+		Status:    request.Status,
+		UserID:    uint(userIDf),
+		ProductID: request.ProductID,
 	}
 
 	err = h.Repository.CreateTransaction(&transaction)

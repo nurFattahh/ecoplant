@@ -12,7 +12,7 @@ type Transaction struct {
 	PaymentMethod     string  `json:"payment_method"`
 	PaymentPrice      float64 `json:"payment_price"`
 	ShippingMethod    string  `json:"shipping_method"`
-	Estimate          string  `json:"estimate"`
+	Estimate          string  `json:"estimate" binding:"required"`
 	UserID            uint    `json:"user_id"`
 	ProductID         uint    `json:"product_id"`
 	ShippingAddressID uint    `json:"-"`
