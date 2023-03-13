@@ -31,12 +31,14 @@ func main() {
 	productRepo := repository.NewProductRepository(db)
 	cartRepo := repository.NewCartRepository(db)
 	transactionRepo := repository.NewTransactionRepository(db)
+	addressRepo := repository.NewAddressRepository(db)
 
 	//handler
 	userHandler := handler.NewUserHandler(&userRepo)
 	productHandler := handler.NewProductRepository(&productRepo)
 	cartHandler := handler.NewCartHandler(&cartRepo)
 	transactionHandler := handler.NewTransactionHandler(&transactionRepo)
+	addressHandler := handler.NewAddressHandler(&addressRepo)
 
 	//user
 	r.POST("/user/register/", userHandler.CreateUser)
@@ -59,7 +61,9 @@ func main() {
 	//transaction
 	r.POST("/transaction/", middleware.JwtMiddleware(), transactionHandler.CreateTransaction)
 	r.GET("/transaction/bearer/", middleware.JwtMiddleware(), transactionHandler.GetAllTransactionByBearer)
-	r.PUT("/transaction/shipping/", middleware.JwtMiddleware(), transactionHandler.ShippingAddress)
+
+	//address
+	r.PUT("/transaction/shipping/", middleware.JwtMiddleware(), addressHandler.ShippingAddress)
 
 	r.Run(":" + port)
 }

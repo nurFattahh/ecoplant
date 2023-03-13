@@ -3,7 +3,6 @@ package repository
 import (
 	"ecoplant/entity"
 	"ecoplant/sdk/crypto"
-	"errors"
 
 	"gorm.io/gorm"
 )
@@ -23,16 +22,20 @@ func (r *UserRepository) CreateUser(model entity.RegisterUser) (*entity.User, er
 		return nil, err
 	}
 
+	var address entity.ShippingAddress = entity.ShippingAddress{}
+	r.db.Create(&address)
+
 	var user entity.User = entity.User{
-		Name:     model.Name,
-		Email:    model.Email,
-		Username: model.Username,
-		Password: hashPassword,
+		Name:              model.Name,
+		Email:             model.Email,
+		Username:          model.Username,
+		Password:          hashPassword,
+		ShippingAddressID: address.ID,
 	}
 
 	result := r.db.Create(&user)
 	if result.Error != nil {
-		return nil, errors.New("USERNAME ALREADY IN USE")
+		return nil, err
 	}
 	return &user, nil
 }
@@ -45,7 +48,7 @@ func (r *UserRepository) FindByUsernameOrEmail(UsernameOrEmail string) (entity.U
 
 func (r *UserRepository) GetUserById(id uint) (*entity.User, error) {
 	var user entity.User
-	result := r.db.Where("id = ?", id).Preload("Transaction").Preload("Address").Take(&user)
+	result := r.db.Where("id = ?", id).Preload("Transaction.Product").Preload("Address").Take(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}

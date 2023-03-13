@@ -19,6 +19,7 @@ func GenerateToken(payload entity.User) (string, error) {
 	temporaryJwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":       payload.ID,
 		"username": payload.Username,
+		"shipping": payload.ShippingAddressID,
 		"exp":      time.Now().Add(exp).Unix(),
 	})
 

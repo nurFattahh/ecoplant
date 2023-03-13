@@ -32,22 +32,16 @@ func (r *TransactionRepository) CreateTransaction(transaction *entity.Transactio
 
 func (r *TransactionRepository) GetAllTransactionByBearer(user uint) ([]entity.Transaction, error) {
 	var transaction []entity.Transaction
-	err := r.db.Model(entity.Transaction{}).Preload("Product").Find(&transaction).Error
+	err := r.db.Model(entity.Transaction{}).Where("user_id = ?", user).Preload("Product").Find(&transaction).Error
 	if err != nil {
 		return nil, err
 	}
 	return transaction, nil
 }
 
-func (r *TransactionRepository) ShippingAddress(ID uint, ShippingAddress *entity.ShippingAddress) error {
-	err := r.db.Where("shipping_address_id = ?", ID).Updates(&ShippingAddress).Error
-
-	return err
-}
-
 func (r *TransactionRepository) GetAddress(id uint) (*entity.ShippingAddress, error) {
 	var address entity.ShippingAddress
-	result := r.db.Where("shipping_address_id = ?", id).Take(&address)
+	result := r.db.Where("user_id = ?", id).Take(&address)
 	if result.Error != nil {
 		return nil, result.Error
 	}
