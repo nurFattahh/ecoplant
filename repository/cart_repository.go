@@ -61,3 +61,20 @@ func (r *CartRepository) UpdateTotal(ID uint, total float64) error {
 	return err
 
 }
+
+func (r *CartRepository) GetAllCartItem(ID uint) ([]entity.CartItem, error) {
+	var items []entity.CartItem
+	err := r.db.Model(entity.CartItem{}).Where("cart_id =?", ID).Find(&items).Error
+	return items, err
+}
+
+func (r *CartRepository) UpdateQuantity(ID uint) error {
+	err := r.db.Model(entity.CartItem{}).Where("product_id =?", ID).Update("quantity", gorm.Expr("quantity + ?", 1)).Error
+	return err
+}
+
+func (r *CartRepository) DeleteItemInCartByID(CartID uint, ProductID uint) error {
+	var item entity.CartItem
+	err := r.db.Where("product_id =? AND cart_id =? ", ProductID, CartID).Delete(&item).Error
+	return err
+}

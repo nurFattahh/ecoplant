@@ -6,6 +6,7 @@ import (
 	"ecoplant/sdk/response"
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -62,6 +63,8 @@ func (h *CartHandler) AddProductToCart(c *gin.Context) {
 		ProductID:   request.ProductID,
 		CartID:      user.CartID,
 	}
+	total := 0
+
 	err = h.Repository.AddProductToCart(addProduct.CartID, &addProduct)
 	if err != nil {
 		response.FailOrError(c, http.StatusInternalServerError, "Failed add product", err)
@@ -73,7 +76,7 @@ func (h *CartHandler) AddProductToCart(c *gin.Context) {
 		response.FailOrError(c, http.StatusInternalServerError, "Failed get cl", err)
 		return
 	}
-	total := 0
+
 	for _, item := range items {
 		total += int(item.Total)
 	}
@@ -114,4 +117,45 @@ func (h *CartHandler) GetAllProductInCart(c *gin.Context) {
 	}
 
 	response.Success(c, http.StatusOK, "Cart Found", carts)
+}
+
+func (h *CartHandler) DeleteItemInCartByID(c *gin.Context) {
+	query := c.Query("product_id")
+
+	parseQuery, _ := strconv.ParseInt(query, 10, 64)
+
+	result, exist := c.Get("user")
+	if !exist {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "no user key found", errors.New("erorr"))
+		return
+	}
+	claims, ok := result.(jwt.MapClaims)
+	if !ok {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error parsing ", errors.New("erorr"))
+		return
+	}
+
+	userIDc := claims["id"]
+	userIDf, ok := userIDc.(float64)
+	if !ok {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error get id", errors.New("erorr"))
+		return
+	}
+
+	cart, err := h.Repository.GetUserCartId(uint(userIDf))
+	if err != nil {
+		response.FailOrError(c, http.StatusNotFound, "Failed get user cart id", err)
+		return
+	}
+
+	IDCart := cart.CartID
+
+	err = h.Repository.DeleteItemInCartByID(IDCart, uint(parseQuery))
+	if err != nil {
+		response.FailOrError(c, http.StatusNotFound, "Failed delete item", err)
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Success delete Item", err)
+
 }

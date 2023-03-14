@@ -48,15 +48,16 @@ func main() {
 
 	//product
 	r.GET("/products", productHandler.GetAllProduct)
-	r.POST("/product/", productHandler.CreateProduct)
 	r.GET("/product/:id", productHandler.GetProductByID)
 	r.GET("/product/search/", productHandler.GetProductByName)
+	r.POST("/product/", productHandler.CreateProduct)
 	r.DELETE("/product/:id", productHandler.DeleteProductById)
 	r.PATCH("/product/update/:id", productHandler.UpdateLocation)
 
 	//cart
 	r.POST("/cart/add/", middleware.JwtMiddleware(), cartHandler.AddProductToCart)
 	r.GET("/carts/", middleware.JwtMiddleware(), cartHandler.GetAllProductInCart)
+	r.DELETE("/cart/delete/", middleware.JwtMiddleware(), cartHandler.DeleteItemInCartByID)
 
 	//transaction
 	r.POST("/transaction/", middleware.JwtMiddleware(), transactionHandler.CreateTransaction)

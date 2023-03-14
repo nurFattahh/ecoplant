@@ -3,6 +3,7 @@ package repository
 import (
 	"ecoplant/entity"
 	"ecoplant/sdk/crypto"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -35,7 +36,7 @@ func (r *UserRepository) CreateUser(model entity.RegisterUser) (*entity.User, er
 
 	result := r.db.Create(&user)
 	if result.Error != nil {
-		return nil, err
+		return nil, errors.New("USERNAME ATAU EMAIL SUDAH DIGUNAKAN")
 	}
 
 	var cart entity.Cart = entity.Cart{

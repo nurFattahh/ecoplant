@@ -4,7 +4,7 @@ type Cart struct {
 	ID     uint       `gorm:"primaryKey" json:"-"`
 	Items  []CartItem `json:"items"`
 	UserID uint       `json:"-"`
-	Total  float64    `json:"total"`
+	Total  float64    `json:"total_price"`
 }
 
 type CartItem struct {
@@ -19,4 +19,8 @@ type CartItem struct {
 type AddProduct struct {
 	ProductID   uint `json:"product_id"`
 	IsCheckList bool `json:"is_checklist"`
+}
+
+type DeleteProductFromCart struct {
+	ProductID uint `json:"product_id"`
 }
