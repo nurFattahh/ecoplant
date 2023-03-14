@@ -32,7 +32,8 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 		Description: request.Description,
 		Merchant:    request.Merchant,
 		Picture:     request.Picture,
-		Location:    request.Location,
+		Regency:     request.Regency,
+		District:    request.District,
 	}
 	err := h.Repository.CreateProduct(&product)
 	if err != nil {

@@ -9,9 +9,10 @@ type User struct {
 	Email             string          `gorm:"type:VARCHAR(50); NOT NULL" json:"email"`
 	Password          string          `gorm:"type:TEXT; NOT NULL" json:"-" `
 	Address           ShippingAddress `gorm:"foreignKey:ShippingAddressID" json:"address"`
-	Cart              []Cart          `json:"-"`
+	Cart              Cart            `json:"cart"`
 	Transaction       []Transaction   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"transaction"`
 	ShippingAddressID uint            `json:"-"`
+	CartID            uint            `json:"cart_id"`
 }
 
 type RegisterUser struct {

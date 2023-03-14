@@ -55,7 +55,7 @@ func main() {
 	r.PATCH("/product/update/:id", productHandler.UpdateLocation)
 
 	//cart
-	r.POST("/cart/add/", middleware.JwtMiddleware(), cartHandler.CreateProductForCart)
+	r.POST("/cart/add/", middleware.JwtMiddleware(), cartHandler.AddProductToCart)
 	r.GET("/carts/", middleware.JwtMiddleware(), cartHandler.GetAllProductInCart)
 
 	//transaction

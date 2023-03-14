@@ -37,6 +37,14 @@ func (r *UserRepository) CreateUser(model entity.RegisterUser) (*entity.User, er
 	if result.Error != nil {
 		return nil, err
 	}
+
+	var cart entity.Cart = entity.Cart{
+		UserID: user.ID,
+	}
+	r.db.Create(&cart)
+
+	r.db.Model(&user).Update("cart_id", cart.ID)
+
 	return &user, nil
 }
 
@@ -48,7 +56,7 @@ func (r *UserRepository) FindByUsernameOrEmail(UsernameOrEmail string) (entity.U
 
 func (r *UserRepository) GetUserById(id uint) (*entity.User, error) {
 	var user entity.User
-	result := r.db.Where("id = ?", id).Preload("Transaction.Product").Preload("Address").Take(&user)
+	result := r.db.Where("id = ?", id).Preload("Cart.Items.Product").Preload("Transaction.Product").Preload("Address").Take(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}

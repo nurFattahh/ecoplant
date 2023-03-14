@@ -19,7 +19,7 @@ func NewCartHandler(repo *repository.CartRepository) CartHandler {
 	return CartHandler{*repo}
 }
 
-func (h *CartHandler) CreateProductForCart(c *gin.Context) {
+func (h *CartHandler) AddProductToCart(c *gin.Context) {
 	request := entity.AddProduct{}
 	if err := c.ShouldBindJSON(&request); err != nil {
 		response.FailOrError(c, http.StatusUnprocessableEntity, "Create transaction failed", err)
@@ -44,6 +44,11 @@ func (h *CartHandler) CreateProductForCart(c *gin.Context) {
 		return
 	}
 
+	user, err := h.Repository.GetUserCartId(uint(userIDf))
+	if err != nil {
+		response.FailOrError(c, http.StatusInternalServerError, "failed get user", err)
+	}
+
 	product, err := h.Repository.GetProductByID(request.ProductID)
 	if err != nil {
 		response.FailOrError(c, http.StatusInternalServerError, "Failed get product", err)
@@ -52,14 +57,15 @@ func (h *CartHandler) CreateProductForCart(c *gin.Context) {
 
 	total := request.Quantity * product.Price
 
-	addProduct := entity.Cart{
+	addProduct := entity.CartItem{
 		Product:     *product,
 		Quantity:    request.Quantity,
-		Total:       float64(total),
-		UserID:      uint(userIDf),
 		IsCheckList: request.IsCheckList,
+		Total:       float64(total),
+		ProductID:   request.ProductID,
+		CartID:      user.CartID,
 	}
-	err = h.Repository.AddProductToCart(&addProduct)
+	err = h.Repository.AddProductToCart(addProduct.CartID, &addProduct)
 	if err != nil {
 		response.FailOrError(c, http.StatusInternalServerError, "Failed add product", err)
 		return

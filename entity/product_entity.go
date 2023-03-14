@@ -14,7 +14,8 @@ type Product struct {
 	Description string `json:"description"`
 	Merchant    string `json:"merchant"`
 	Picture     string `gorm:"type:VARCHAR(255)" json:"picture"`
-	Location    string `gorm:"location"`
+	Regency     string `gorm:"regency"`
+	District    string `gorm:"district"`
 }
 
 type CreateProduct struct {
@@ -22,7 +23,8 @@ type CreateProduct struct {
 	Price       int    `json:"price" binding:"required"`
 	Rating      int    `json:"rating" binding:"required"`
 	Description string `json:"description" binding:"required"`
-	Location    string `json:"location"`
+	Regency     string `json:"regency"`
+	District    string `json:"district"`
 	Merchant    string `json:"merchant" binding:"required"`
 	Picture     string `gorm:"type:VARCHAR(255)" json:"picture" binding:"required"`
 }
