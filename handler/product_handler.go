@@ -66,7 +66,10 @@ func (h *ProductHandler) GetAllProduct(c *gin.Context) {
 	}
 
 	productParam.ProcessPagin(totalElements)
-	response.ResponsePagination(c, http.StatusOK, "Product found", products, &productParam)
+	response.Success(c, http.StatusOK, "Product Found", gin.H{
+		"pagination": &productParam,
+		"products":   products,
+	})
 }
 
 func (h *ProductHandler) GetProductByID(c *gin.Context) {

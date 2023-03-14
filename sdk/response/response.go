@@ -1,8 +1,6 @@
 package response
 
 import (
-	"ecoplant/entity"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -44,13 +42,4 @@ func FailOrError(c *gin.Context, httpCode int, msg string, err error) {
 			"message": "RESPONSE ERROR",
 		})
 	}
-}
-
-func ResponsePagination(c *gin.Context, httpCode int, msg string, data interface{}, pagin *entity.PaginParam) {
-	c.JSON(httpCode, map[string]interface{}{
-		"status":     "success",
-		"message":    msg,
-		"data":       data,
-		"pagination": pagin,
-	})
 }

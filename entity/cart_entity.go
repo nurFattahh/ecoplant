@@ -1,25 +1,22 @@
 package entity
 
-import "gorm.io/gorm"
-
 type Cart struct {
-	gorm.Model
+	ID     uint       `gorm:"primaryKey" json:"-"`
 	Items  []CartItem `json:"items"`
-	UserID uint       `json:"user_id"`
+	UserID uint       `json:"-"`
 	Total  float64    `json:"total"`
 }
 
 type CartItem struct {
 	Product     Product `gorm:"foreignKey:ProductID" json:"product"`
 	IsCheckList bool    `gorm:"default:false" json:"checklist"`
-	Quantity    int     `json:"quantity"`
+	Quantity    int     `gorm:"default:1" json:"quantity"`
 	Total       float64 `json:"total"`
-	ProductID   uint    `json:"product_id"`
-	CartID      uint    `json:"cart_id"`
+	ProductID   uint    `json:"-"`
+	CartID      uint    `json:"-"`
 }
 
 type AddProduct struct {
 	ProductID   uint `json:"product_id"`
-	Quantity    int  `json:"quantity"`
 	IsCheckList bool `json:"is_checklist"`
 }

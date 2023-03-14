@@ -49,3 +49,15 @@ func (r *CartRepository) GetAllProductInCart(ID uint) ([]entity.Cart, error) {
 	}
 	return cart, nil
 }
+
+func (r *CartRepository) GetCheckListProduct(ID uint) ([]entity.CartItem, error) {
+	var items []entity.CartItem
+	err := r.db.Model(entity.CartItem{}).Where("is_check_list =? AND cart_id =?", 1, ID).Find(&items).Error
+	return items, err
+}
+
+func (r *CartRepository) UpdateTotal(ID uint, total float64) error {
+	err := r.db.Model(entity.Cart{}).Where("id =?", ID).Update("total", total).Error
+	return err
+
+}

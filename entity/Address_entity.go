@@ -1,9 +1,7 @@
 package entity
 
-import "gorm.io/gorm"
-
 type ShippingAddress struct {
-	gorm.Model
+	ID              uint   `gorm:"primaryKey" json:"-"`
 	Recipient       string `json:"recipient"`
 	Phone           string `json:"phone"`
 	Province        string `json:"province"`

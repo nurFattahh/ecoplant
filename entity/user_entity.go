@@ -12,7 +12,7 @@ type User struct {
 	Cart              Cart            `json:"cart"`
 	Transaction       []Transaction   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"transaction"`
 	ShippingAddressID uint            `json:"-"`
-	CartID            uint            `json:"cart_id"`
+	CartID            uint            `json:"-"`
 }
 
 type RegisterUser struct {

@@ -55,19 +55,32 @@ func (h *CartHandler) AddProductToCart(c *gin.Context) {
 		return
 	}
 
-	total := request.Quantity * product.Price
-
 	addProduct := entity.CartItem{
 		Product:     *product,
-		Quantity:    request.Quantity,
 		IsCheckList: request.IsCheckList,
-		Total:       float64(total),
+		Total:       float64(product.Price),
 		ProductID:   request.ProductID,
 		CartID:      user.CartID,
 	}
 	err = h.Repository.AddProductToCart(addProduct.CartID, &addProduct)
 	if err != nil {
 		response.FailOrError(c, http.StatusInternalServerError, "Failed add product", err)
+		return
+	}
+
+	items, err := h.Repository.GetCheckListProduct(user.CartID)
+	if err != nil {
+		response.FailOrError(c, http.StatusInternalServerError, "Failed get cl", err)
+		return
+	}
+	total := 0
+	for _, item := range items {
+		total += int(item.Total)
+	}
+
+	err = h.Repository.UpdateTotal(user.CartID, float64(total))
+	if err != nil {
+		response.FailOrError(c, http.StatusInternalServerError, "Failed update total", err)
 		return
 	}
 

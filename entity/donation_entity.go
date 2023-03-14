@@ -1,7 +1,9 @@
 package entity
 
+import "gorm.io/gorm"
+
 type Donation struct {
-	ID          uint      `gorm:"primaryKey" json:"id"`
+	gorm.Model
 	Regency     string    `json:"regency"`
 	District    string    `json:"district"`
 	NumDonate   int       `json:"num_donate"`
