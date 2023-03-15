@@ -14,7 +14,7 @@ type ProductHandler struct {
 	Repository repository.ProductRepository
 }
 
-func NewProductRepository(repo *repository.ProductRepository) ProductHandler {
+func NewProductHandler(repo *repository.ProductRepository) ProductHandler {
 	return ProductHandler{*repo}
 }
 

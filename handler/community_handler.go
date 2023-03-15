@@ -14,7 +14,7 @@ type CommunityHandler struct {
 	Repository repository.CommunityRepository
 }
 
-func NewCommunityRepository(repo *repository.CommunityRepository) CommunityHandler {
+func NewCommunityHandler(repo *repository.CommunityRepository) CommunityHandler {
 	return CommunityHandler{*repo}
 }
 

@@ -36,11 +36,11 @@ func main() {
 
 	//handler
 	userHandler := handler.NewUserHandler(&userRepo)
-	productHandler := handler.NewProductRepository(&productRepo)
+	productHandler := handler.NewProductHandler(&productRepo)
 	cartHandler := handler.NewCartHandler(&cartRepo)
 	transactionHandler := handler.NewTransactionHandler(&transactionRepo)
 	addressHandler := handler.NewAddressHandler(&addressRepo)
-	communityHandler := handler.NewCommunityRepository(&communityRepo)
+	communityHandler := handler.NewCommunityHandler(&communityRepo)
 
 	//user
 	r.POST("/user/register/", userHandler.CreateUser)
@@ -73,6 +73,8 @@ func main() {
 	r.GET("community/", communityHandler.GetCommunityByID)
 	r.GET("communities/", communityHandler.GetAllCommunity)
 	r.GET("community/name/", communityHandler.GetCommunityByName)
+
+	//Donation
 
 	r.Run(":" + port)
 }

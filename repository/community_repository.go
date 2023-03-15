@@ -42,7 +42,7 @@ func (r *CommunityRepository) GetAllCommunity(model *entity.PaginParam) ([]entit
 	}
 	var totalElements int64
 	err = r.db.
-		Model(entity.Product{}).
+		Model(entity.Donation{}).
 		Limit(model.Limit).
 		Offset(model.Offset).
 		Count(&totalElements).Error
