@@ -13,3 +13,12 @@ type Community struct {
 	Activities  []Donation `json:"activites"`
 	Document    string     `json:"document"`
 }
+
+type CreateCommunity struct {
+	Picture     string `json:"picture"`
+	Name        string `json:"name"`
+	Email       string `gorm:"unique" json:"email"`
+	Phone       string `json:"phone"`
+	Description string `json:"description"`
+	Document    string `json:"document"`
+}

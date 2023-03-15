@@ -32,6 +32,7 @@ func main() {
 	cartRepo := repository.NewCartRepository(db)
 	transactionRepo := repository.NewTransactionRepository(db)
 	addressRepo := repository.NewAddressRepository(db)
+	communityRepo := repository.NewCommunityRepository(db)
 
 	//handler
 	userHandler := handler.NewUserHandler(&userRepo)
@@ -39,6 +40,7 @@ func main() {
 	cartHandler := handler.NewCartHandler(&cartRepo)
 	transactionHandler := handler.NewTransactionHandler(&transactionRepo)
 	addressHandler := handler.NewAddressHandler(&addressRepo)
+	communityHandler := handler.NewCommunityRepository(&communityRepo)
 
 	//user
 	r.POST("/user/register/", userHandler.CreateUser)
@@ -65,6 +67,12 @@ func main() {
 
 	//address
 	r.PUT("/transaction/shipping/", middleware.JwtMiddleware(), addressHandler.ShippingAddress)
+
+	//Community
+	r.POST("community/create/", communityHandler.CreateCommunity)
+	r.GET("community/", communityHandler.GetCommunityByID)
+	r.GET("communities/", communityHandler.GetAllCommunity)
+	r.GET("community/name/", communityHandler.GetCommunityByName)
 
 	r.Run(":" + port)
 }

@@ -8,6 +8,7 @@ type Donation struct {
 	District    string    `json:"district"`
 	NumDonate   int       `json:"num_donate"`
 	Wallet      float64   `json:"wallet"`
+	Target      float64   `json:"target"`
 	RemainDay   int       `json:"remain_day"`
 	Plan        string    `json:"plan"`
 	News        string    `json:"news"`
