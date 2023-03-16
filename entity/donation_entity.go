@@ -13,17 +13,32 @@ type Donation struct {
 	RemainDay   int       `json:"remain_day"`
 	Plan        string    `json:"plan"`
 	News        string    `json:"news"`
-	Community   Community `gorm:"foreignKey:CommunityID" json:"community"`
-	CommunityID uint      `json:"community_id"`
+	Picture     string    `json:"picture"`
+	Community   Community `gorm:"foreignKey:CommunityID" json:"-"`
+	CommunityID uint      `json:"-"`
+}
+
+type UserDonation struct {
+	gorm.Model
+	UserID        uint     `json:"user_id"`
+	DonationID    uint     `json:"donation_id"`
+	Nominal       float64  `json:"nominal"`
+	PaymentMethod string   `json:"payment_method"`
+	Status        string   `gorm:"default:'Donasi Selesai'" json:"status"`
+	Donation      Donation `gorm:"foreignKey:DonationID" json:"-"`
 }
 
 type CreateDonation struct {
-	Name        string  `json:"name"`
-	Regency     string  `json:"regency"`
-	District    string  `json:"district"`
-	Target      float64 `json:"target"`
-	RemainDay   int     `json:"remain_day"`
-	Plan        string  `json:"plan"`
-	News        string  `json:"news"`
-	CommunityID uint    `json:"community_id"`
+	Name      string  `json:"name"`
+	Regency   string  `json:"regency"`
+	District  string  `json:"district"`
+	Target    float64 `json:"target"`
+	RemainDay int     `json:"remain_day"`
+	Plan      string  `json:"plan"`
+	News      string  `json:"news"`
+}
+
+type UserDonationRequest struct {
+	Nominal       float64 `json:"nominal"`
+	PaymentMethod int     `json:"payment_method"`
 }

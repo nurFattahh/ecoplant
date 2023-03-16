@@ -39,7 +39,7 @@ func (h *CommunityHandler) CreateCommunity(c *gin.Context) {
 		return
 	}
 
-	response.Success(c, http.StatusCreated, "Community creation succeeded", request)
+	response.Success(c, http.StatusCreated, "Community creation succeeded", community)
 }
 
 func (h *CommunityHandler) GetAllCommunity(c *gin.Context) {

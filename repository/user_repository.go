@@ -63,3 +63,8 @@ func (r *UserRepository) GetUserById(id uint) (*entity.User, error) {
 	}
 	return &user, nil
 }
+
+func (r *UserRepository) UpdateUser(id uint, model entity.User) error {
+	err := r.db.Where("id = ?", id).Updates(model).Error
+	return err
+}

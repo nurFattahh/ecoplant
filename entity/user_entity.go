@@ -11,6 +11,7 @@ type User struct {
 	Address           ShippingAddress `gorm:"foreignKey:ShippingAddressID" json:"address"`
 	Cart              Cart            `json:"cart"`
 	Transaction       []Transaction   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"transaction"`
+	Picture           string          `json:"picture"`
 	ShippingAddressID uint            `json:"-"`
 	CartID            uint            `json:"-"`
 }
@@ -25,4 +26,11 @@ type RegisterUser struct {
 type LoginUser struct {
 	UsernameOrEmail string `json:"username/email"`
 	Password        string `json:"password"`
+}
+
+type UpdateUser struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Username string `json:"username"`
+	Picture  string `json:"picture"`
 }

@@ -33,7 +33,7 @@ func (r *DonationRepository) GetDonationByRegency(query string) (*[]entity.Donat
 func (r *DonationRepository) GetAllDonation(model *entity.PaginParam) ([]entity.Donation, int, error) {
 	var donation []entity.Donation
 	err := r.db.
-		Model(entity.Community{}).
+		Model(entity.Donation{}).
 		Limit(model.Limit).
 		Offset(model.Offset).
 		Find(&donation).Error
@@ -72,6 +72,23 @@ func (r *DonationRepository) GetCommunityByID(ID uint) (*entity.Community, error
 		return nil, result.Error
 	}
 	return &community, nil
+}
+
+func (r *DonationRepository) CreateUserDonation(donationID, nominal float64, model *entity.UserDonation) error {
+	err := r.db.Model(entity.Donation{}).Where("id =?", donationID).Update("wallet", gorm.Expr("wallet + ?", nominal)).Error
+	if err != nil {
+		return err
+	}
+	return r.db.Create(model).Error
+}
+
+func (r *DonationRepository) GetAllUserDonation(ID uint) ([]entity.UserDonation, error) {
+	var donation []entity.UserDonation
+	err := r.db.Model(entity.UserDonation{}).Where("user_id =?", ID).Find(&donation).Error
+	if err != nil {
+		return nil, err
+	}
+	return donation, nil
 }
 
 func (h *DonationRepository) BindBody(c *gin.Context, body interface{}) interface{} {

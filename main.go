@@ -33,6 +33,7 @@ func main() {
 	transactionRepo := repository.NewTransactionRepository(db)
 	addressRepo := repository.NewAddressRepository(db)
 	communityRepo := repository.NewCommunityRepository(db)
+	donationRepo := repository.NewDonationRepository(db)
 
 	//handler
 	userHandler := handler.NewUserHandler(&userRepo)
@@ -41,15 +42,17 @@ func main() {
 	transactionHandler := handler.NewTransactionHandler(&transactionRepo)
 	addressHandler := handler.NewAddressHandler(&addressRepo)
 	communityHandler := handler.NewCommunityHandler(&communityRepo)
+	donationHandler := handler.NewDonationHandler(&donationRepo)
 
 	//user
 	r.POST("/user/register/", userHandler.CreateUser)
 	r.POST("/user/login/", userHandler.LoginUser)
 	r.POST("/user/", userHandler.GetUserById)
 	r.GET("/user/bearer/", middleware.JwtMiddleware(), userHandler.GetUserByBearer)
+	r.PATCH("/user/update/", middleware.JwtMiddleware(), userHandler.UpdateUser)
 
 	//product
-	r.GET("/products", productHandler.GetAllProduct)
+	r.GET("/products/", productHandler.GetAllProduct)
 	r.GET("/product/:id", productHandler.GetProductByID)
 	r.GET("/product/search/", productHandler.GetProductByName)
 	r.POST("/product/", productHandler.CreateProduct)
@@ -69,12 +72,19 @@ func main() {
 	r.PUT("/transaction/shipping/", middleware.JwtMiddleware(), addressHandler.ShippingAddress)
 
 	//Community
-	r.POST("community/create/", communityHandler.CreateCommunity)
-	r.GET("community/", communityHandler.GetCommunityByID)
-	r.GET("communities/", communityHandler.GetAllCommunity)
-	r.GET("community/name/", communityHandler.GetCommunityByName)
+	r.POST("/community/", communityHandler.CreateCommunity)
+	r.GET("/community/:id", communityHandler.GetCommunityByID)
+	r.GET("/communities/", communityHandler.GetAllCommunity)
+	r.GET("/community/name/", communityHandler.GetCommunityByName)
 
 	//Donation
+	r.POST("/donation/:id", donationHandler.CreateDonation)
+	r.GET("/donations/", donationHandler.GetAllDonation)
+	r.GET("/donation/:id", donationHandler.GetDonationByID)
+	r.GET("/donation/regency/", donationHandler.GetDonationByRegency)
+	r.POST("/user/donation/:id", middleware.JwtMiddleware(), donationHandler.UserDonation)
+	r.GET("/user/donations/", middleware.JwtMiddleware(), donationHandler.GetAllUserDonation)
 
 	r.Run(":" + port)
+
 }

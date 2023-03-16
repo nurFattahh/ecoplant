@@ -22,7 +22,7 @@ func (r *CommunityRepository) CreateCommunity(model *entity.Community) error {
 
 func (r *CommunityRepository) GetCommunityByName(query string) (*[]entity.Community, error) {
 	var community []entity.Community
-	result := r.db.Where("name LIKE ?", "%"+query+"%").Find(&community)
+	result := r.db.Where("name LIKE ?", "%"+query+"%").Preload("Activities").Find(&community)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -36,6 +36,7 @@ func (r *CommunityRepository) GetAllCommunity(model *entity.PaginParam) ([]entit
 		Model(entity.Community{}).
 		Limit(model.Limit).
 		Offset(model.Offset).
+		Preload("Activities").
 		Find(&community).Error
 	if err != nil {
 		return nil, 0, err

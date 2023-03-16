@@ -4,10 +4,12 @@ import (
 	"ecoplant/entity"
 	"ecoplant/repository"
 	"ecoplant/sdk/response"
+	"errors"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 type DonationHandler struct {
@@ -79,7 +81,7 @@ func (h *DonationHandler) GetAllDonation(c *gin.Context) {
 	productParam.ProcessPagin(totalElements)
 	response.Success(c, http.StatusOK, "Donation Found", gin.H{
 		"pagination": &productParam,
-		"community":  donation,
+		"donation":   donation,
 	})
 }
 
@@ -114,4 +116,125 @@ func (h *DonationHandler) GetDonationByRegency(c *gin.Context) {
 	}
 
 	response.Success(c, http.StatusOK, "donation found", products)
+}
+
+//USER DONATION
+
+func (h *DonationHandler) UserDonation(c *gin.Context) {
+	id := c.Param("id")
+
+	parsedID, _ := strconv.ParseUint(id, 10, 64)
+
+	result, exist := c.Get("user")
+
+	if !exist {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "no user key found", errors.New("erorr"))
+		return
+	}
+	claims, ok := result.(jwt.MapClaims)
+	if !ok {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error parsing ", errors.New("erorr"))
+		return
+	}
+
+	userIDc := claims["id"]
+	userIDf, ok := userIDc.(float64)
+	if !ok {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error get id", errors.New("erorr"))
+		return
+	}
+
+	request := entity.UserDonationRequest{}
+	if err := c.ShouldBindJSON(&request); err != nil {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "Create transaction failed", err)
+		return
+	}
+
+	donation, err := h.Repository.GetDonationByID(uint(parsedID))
+	if err != nil {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "failed getting donation", err)
+		return
+	}
+
+	donation.Wallet += request.Nominal
+	donation.NumDonate++
+
+	nominal := request.Nominal
+	switch nominal {
+	case 1:
+		nominal = 5000
+	case 2:
+		nominal = 10000
+	case 3:
+		nominal = 20000
+	case 4:
+		nominal = 50000
+	case 5:
+		nominal = 100000
+	case 6:
+		nominal = 1000000
+	default:
+		nominal = request.Nominal
+	}
+
+	payMethodReq := request.PaymentMethod
+	var payMethod string
+	switch payMethodReq {
+	case 1:
+		payMethod = "Bank BCA"
+	case 2:
+		payMethod = "Bank BRI"
+	case 3:
+		payMethod = "Bank BNI"
+	case 4:
+		payMethod = "Bank Mandiri"
+	case 5:
+		payMethod = "Bank CIMBNIAGA"
+	}
+
+	var donate entity.UserDonation = entity.UserDonation{
+		UserID:        uint(userIDf),
+		DonationID:    uint(parsedID),
+		Nominal:       nominal,
+		PaymentMethod: payMethod,
+		Donation:      *donation,
+	}
+
+	err = h.Repository.CreateUserDonation(float64(parsedID), nominal, &donate)
+	if err != nil {
+		response.FailOrError(c, http.StatusInternalServerError, "failed create donation", err)
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Donation Success", donate)
+
+}
+
+func (h *DonationHandler) GetAllUserDonation(c *gin.Context) {
+	result, exist := c.Get("user")
+
+	if !exist {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "no user key found", errors.New("erorr"))
+		return
+	}
+	claims, ok := result.(jwt.MapClaims)
+	if !ok {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error parsing ", errors.New("erorr"))
+		return
+	}
+
+	userIDc := claims["id"]
+	userIDf, ok := userIDc.(float64)
+	if !ok {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error get id", errors.New("erorr"))
+		return
+	}
+
+	donations, err := h.Repository.GetAllUserDonation(uint(userIDf))
+	if err != nil {
+		response.FailOrError(c, http.StatusOK, "failed create donation", err)
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Success getting user donations", donations)
 }
