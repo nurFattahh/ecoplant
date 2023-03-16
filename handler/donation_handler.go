@@ -232,9 +232,35 @@ func (h *DonationHandler) GetAllUserDonation(c *gin.Context) {
 
 	donations, err := h.Repository.GetAllUserDonation(uint(userIDf))
 	if err != nil {
-		response.FailOrError(c, http.StatusOK, "failed create donation", err)
+		response.FailOrError(c, http.StatusOK, "failed get all donation", err)
 		return
 	}
 
 	response.Success(c, http.StatusOK, "Success getting user donations", donations)
+}
+
+func (h *DonationHandler) UpdatePlanAndNewsDonation(c *gin.Context) {
+	id := c.Param("id")
+
+	parsedID, _ := strconv.ParseUint(id, 10, 64)
+
+	request := entity.UpdatePlanAndNewsDonation{}
+	if err := c.ShouldBindJSON(&request); err != nil {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "updating failed", err)
+		return
+	}
+
+	donate := entity.Donation{
+		Plan: request.Plan,
+		News: request.News,
+	}
+
+	err := h.Repository.UpdatePlanAndNewsDonation(uint(parsedID), donate)
+	if err != nil {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "failed updating plan and news", err)
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Success updating plan and news", request)
+
 }

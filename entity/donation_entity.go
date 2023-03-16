@@ -29,6 +29,7 @@ type UserDonation struct {
 }
 
 type CreateDonation struct {
+	Picture   string  `json:"picture"`
 	Name      string  `json:"name"`
 	Regency   string  `json:"regency"`
 	District  string  `json:"district"`
@@ -41,4 +42,9 @@ type CreateDonation struct {
 type UserDonationRequest struct {
 	Nominal       float64 `json:"nominal"`
 	PaymentMethod int     `json:"payment_method"`
+}
+
+type UpdatePlanAndNewsDonation struct {
+	Plan string `json:"plan"`
+	News string `json:"news"`
 }

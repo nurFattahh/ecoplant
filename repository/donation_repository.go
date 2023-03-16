@@ -91,6 +91,11 @@ func (r *DonationRepository) GetAllUserDonation(ID uint) ([]entity.UserDonation,
 	return donation, nil
 }
 
+func (r *DonationRepository) UpdatePlanAndNewsDonation(id uint, model entity.Donation) error {
+	err := r.db.Model(entity.Donation{}).Where("id =?", id).Updates(model).Error
+	return err
+}
+
 func (h *DonationRepository) BindBody(c *gin.Context, body interface{}) interface{} {
 	return c.ShouldBindWith(body, binding.JSON)
 }
