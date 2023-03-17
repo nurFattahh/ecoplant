@@ -89,7 +89,7 @@ func (r *DonationRepository) CreateUserDonation(donationID uint, nominal float64
 
 func (r *DonationRepository) GetAllUserDonation(ID uint) ([]entity.UserDonation, error) {
 	var donation []entity.UserDonation
-	err := r.db.Model(entity.UserDonation{}).Where("user_id =?", ID).Find(&donation).Error
+	err := r.db.Model(entity.UserDonation{}).Where("user_id =?", ID).Preload("Donation.Community").Find(&donation).Error
 	if err != nil {
 		return nil, err
 	}

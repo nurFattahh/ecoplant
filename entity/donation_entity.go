@@ -25,7 +25,7 @@ type UserDonation struct {
 	Nominal       float64  `json:"nominal"`
 	PaymentMethod string   `json:"payment_method"`
 	Status        string   `gorm:"default:'Donasi Selesai'" json:"status"`
-	Donation      Donation `gorm:"foreignKey:DonationID" json:"-"`
+	Donation      Donation `gorm:"foreignKey:DonationID" json:"donation"`
 }
 
 type CreateDonation struct {
