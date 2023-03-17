@@ -76,6 +76,9 @@ func (r *DonationRepository) GetCommunityByID(ID uint) (*entity.Community, error
 
 func (r *DonationRepository) CreateUserDonation(donationID, nominal float64, model *entity.UserDonation) error {
 	err := r.db.Model(entity.Donation{}).Where("id =?", donationID).Update("wallet", gorm.Expr("wallet + ?", nominal)).Error
+	if err != nil {
+		return err
+	}
 	err = r.db.Model(entity.Donation{}).Where("id =?", donationID).Update("num_donate", gorm.Expr("num_donate + ?", 1)).Error
 	if err != nil {
 		return err

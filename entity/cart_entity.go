@@ -8,12 +8,11 @@ type Cart struct {
 }
 
 type CartItem struct {
-	Product     Product `gorm:"foreignKey:ProductID" json:"product"`
-	IsCheckList bool    `gorm:"default:true" json:"checklist"`
-	Quantity    int     `gorm:"default:1" json:"quantity"`
-	Total       float64 `json:"total"`
-	ProductID   uint    `json:"-"`
-	CartID      uint    `json:"-"`
+	Product   Product `gorm:"foreignKey:ProductID" json:"product"`
+	Quantity  int     `gorm:"default:1" json:"quantity"`
+	Total     float64 `json:"total"`
+	ProductID uint    `json:"-"`
+	CartID    uint    `json:"-"`
 }
 
 type AddProduct struct {
