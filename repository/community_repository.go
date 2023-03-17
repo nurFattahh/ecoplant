@@ -56,7 +56,7 @@ func (r *CommunityRepository) GetAllCommunity(model *entity.PaginParam) ([]entit
 func (r *CommunityRepository) GetCommunityByID(ID uint) (*entity.Community, error) {
 	var community entity.Community
 
-	result := r.db.First(&community, ID)
+	result := r.db.Preload("Activities").First(&community, ID)
 
 	if result.Error != nil {
 		return nil, result.Error
