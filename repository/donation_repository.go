@@ -75,7 +75,7 @@ func (r *DonationRepository) GetCommunityByID(ID uint) (*entity.Community, error
 	return &community, nil
 }
 
-func (r *DonationRepository) CreateUserDonation(donationID, nominal float64, model *entity.UserDonation) error {
+func (r *DonationRepository) CreateUserDonation(donationID uint, nominal float64, model *entity.UserDonation) error {
 	err := r.db.Model(entity.Donation{}).Where("id =?", donationID).Update("wallet", gorm.Expr("wallet + ?", nominal)).Error
 	if err != nil {
 		return err

@@ -145,9 +145,6 @@ func (h *DonationHandler) GetDonationByRegency(c *gin.Context) {
 //USER DONATION
 
 func (h *DonationHandler) UserDonation(c *gin.Context) {
-	id := c.Param("id")
-
-	parsedID, _ := strconv.ParseUint(id, 10, 64)
 
 	result, exist := c.Get("user")
 
@@ -224,7 +221,7 @@ func (h *DonationHandler) UserDonation(c *gin.Context) {
 		Donation:      *donation,
 	}
 
-	err = h.Repository.CreateUserDonation(float64(parsedID), nominal, &donate)
+	err = h.Repository.CreateUserDonation(request.DonationID, nominal, &donate)
 	if err != nil {
 		response.FailOrError(c, http.StatusInternalServerError, "failed create donation", err)
 		return
