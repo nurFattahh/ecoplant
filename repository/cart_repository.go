@@ -73,12 +73,8 @@ func (r *CartRepository) UpdateQuantity(ID uint) error {
 	return err
 }
 
-func (r *CartRepository) DeleteItemInCartByID(CartID uint, price int, ProductID uint) error {
+func (r *CartRepository) DeleteItemInCartByID(CartID uint, ProductID uint) error {
 	var item entity.CartItem
 	err := r.db.Where("product_id =? AND cart_id =? ", ProductID, CartID).Delete(&item).Error
-	if err != nil {
-		return err
-	}
-	err = r.db.Model(entity.Cart{}).Where("ID =?", CartID).Update("price_total", gorm.Expr("price_total - ?", price)).Error
 	return err
 }

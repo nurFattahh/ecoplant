@@ -147,12 +147,9 @@ func (h *CartHandler) DeleteItemInCartByID(c *gin.Context) {
 		return
 	}
 
-	product, err := h.Repository.GetProductByID(uint(parseQuery))
-	price := product.Price
-
 	IDCart := cart.CartID
 
-	err = h.Repository.DeleteItemInCartByID(IDCart, price, uint(parseQuery))
+	err = h.Repository.DeleteItemInCartByID(IDCart, uint(parseQuery))
 	if err != nil {
 		response.FailOrError(c, http.StatusNotFound, "Failed delete item", err)
 		return
