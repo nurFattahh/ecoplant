@@ -57,11 +57,10 @@ func (h *CartHandler) AddProductToCart(c *gin.Context) {
 	}
 
 	addProduct := entity.CartItem{
-		Product:     *product,
-		IsCheckList: request.IsCheckList,
-		Total:       float64(product.Price),
-		ProductID:   request.ProductID,
-		CartID:      user.CartID,
+		Product:   *product,
+		Total:     float64(product.Price),
+		ProductID: request.ProductID,
+		CartID:    user.CartID,
 	}
 	total := 0
 

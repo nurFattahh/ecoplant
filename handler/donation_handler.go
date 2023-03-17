@@ -41,6 +41,7 @@ func (h *DonationHandler) CreateDonation(c *gin.Context) {
 		Regency:     request.Regency,
 		District:    request.District,
 		Target:      request.Target,
+		Picture:     request.Picture,
 		RemainDay:   request.RemainDay,
 		Plan:        request.Plan,
 		News:        request.News,

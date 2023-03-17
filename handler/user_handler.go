@@ -147,5 +147,5 @@ func (h *userHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	response.Success(c, http.StatusOK, "Success updating profile", nil)
+	response.Success(c, http.StatusOK, "Success updating profile", request)
 }
