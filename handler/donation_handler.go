@@ -174,7 +174,7 @@ func (h *DonationHandler) UserDonation(c *gin.Context) {
 		return
 	}
 
-	donation, err := h.Repository.GetDonationByID(uint(parsedID))
+	donation, err := h.Repository.GetDonationByID(request.DonationID)
 	if err != nil {
 		response.FailOrError(c, http.StatusUnprocessableEntity, "failed getting donation", err)
 		return
@@ -218,7 +218,7 @@ func (h *DonationHandler) UserDonation(c *gin.Context) {
 
 	var donate entity.UserDonation = entity.UserDonation{
 		UserID:        uint(userIDf),
-		DonationID:    uint(parsedID),
+		DonationID:    request.DonationID,
 		Nominal:       nominal,
 		PaymentMethod: payMethod,
 		Donation:      *donation,

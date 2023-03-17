@@ -84,7 +84,7 @@ func main() {
 	r.GET("/donation/:id", donationHandler.GetDonationByID)
 	r.PATCH("/donation/update/:id", donationHandler.UpdatePlanAndNewsDonation)
 	r.GET("/donation/regency/", donationHandler.GetDonationByRegency)
-	r.POST("/user/donation/:id", middleware.JwtMiddleware(), donationHandler.UserDonation)
+	r.POST("/user/donation/", middleware.JwtMiddleware(), donationHandler.UserDonation)
 	r.GET("/user/donations/", middleware.JwtMiddleware(), donationHandler.GetAllUserDonation)
 
 	r.Run(":" + port)

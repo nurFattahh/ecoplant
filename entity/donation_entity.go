@@ -40,6 +40,7 @@ type CreateDonation struct {
 }
 
 type UserDonationRequest struct {
+	DonationID    uint    `json:"donation_id"`
 	Nominal       float64 `json:"nominal"`
 	PaymentMethod int     `json:"payment_method"`
 }
