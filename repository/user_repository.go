@@ -68,3 +68,8 @@ func (r *UserRepository) UpdateUser(id uint, model entity.User) error {
 	err := r.db.Where("id = ?", id).Updates(model).Error
 	return err
 }
+
+func (r *UserRepository) UpdateProfilePicture(id uint, link string) error {
+	err := r.db.Model(entity.User{}).Where("id =?", id).Update("picture", link).Error
+	return err
+}

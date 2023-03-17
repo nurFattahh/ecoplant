@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"strconv"
 
+	supabasestorageuploader "github.com/adityarizkyramadhan/supabase-storage-uploader"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 )
@@ -110,12 +111,14 @@ func (h *userHandler) GetUserByBearer(c *gin.Context) {
 }
 
 func (h *userHandler) UpdateUser(c *gin.Context) {
+
 	var request entity.UpdateUser
 	err := c.ShouldBindJSON(&request)
 	if err != nil {
 		response.FailOrError(c, http.StatusBadRequest, "bad request", err)
 		return
 	}
+
 	result, exist := c.Get("user")
 	if !exist {
 		response.FailOrError(c, http.StatusUnprocessableEntity, "no user key found", errors.New("Error"))
@@ -137,7 +140,6 @@ func (h *userHandler) UpdateUser(c *gin.Context) {
 	var userUpdate entity.User = entity.User{
 		Name:     request.Name,
 		Username: request.Username,
-		Picture:  request.Picture,
 		Email:    request.Email,
 	}
 
@@ -148,4 +150,51 @@ func (h *userHandler) UpdateUser(c *gin.Context) {
 	}
 
 	response.Success(c, http.StatusOK, "Success updating profile", request)
+}
+
+func (h *userHandler) UpdateProfilePicture(c *gin.Context) {
+	supClient := supabasestorageuploader.NewSupabaseClient(
+		"https://oybixjqqpdbzadyzeeml.supabase.co",
+		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im95Yml4anFxcGRiemFkeXplZW1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzgwNzkwOTYsImV4cCI6MTk5MzY1NTA5Nn0.uxwKBWc9kl4IOxWJMrKUHxDnJbQ19JNgJfbo3oJYiAI",
+		"ecoplants",
+		"profile",
+	)
+
+	result, exist := c.Get("user")
+	if !exist {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "no user key found", errors.New("Error"))
+		return
+	}
+	claims, ok := result.(jwt.MapClaims)
+	if !ok {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error parsing ", errors.New("Error"))
+		return
+	}
+
+	userIDc := claims["id"]
+	userIDf, ok := userIDc.(float64)
+	if !ok {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error get id", errors.New("Error"))
+		return
+	}
+
+	file, err := c.FormFile("picture")
+	if err != nil {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error getting request", err)
+		return
+	}
+	link, err := supClient.Upload(file)
+	if err != nil {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "Failed uploading picture", err)
+		return
+	}
+
+	err = h.Repository.UpdateProfilePicture(uint(userIDf), link)
+	if err != nil {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "Failed updating picture", err)
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Success updating profile", link)
+
 }

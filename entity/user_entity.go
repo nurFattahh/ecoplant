@@ -32,5 +32,4 @@ type UpdateUser struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Username string `json:"username"`
-	Picture  string `json:"picture"`
 }

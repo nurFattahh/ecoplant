@@ -3,6 +3,7 @@ module ecoplant
 go 1.19
 
 require (
+	github.com/adityarizkyramadhan/supabase-storage-uploader v0.0.3
 	github.com/gin-gonic/gin v1.9.0
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/joho/godotenv v1.5.1

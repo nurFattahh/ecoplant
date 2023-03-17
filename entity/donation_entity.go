@@ -14,7 +14,7 @@ type Donation struct {
 	Plan        string    `json:"plan"`
 	News        string    `json:"news"`
 	Picture     string    `json:"picture"`
-	Community   Community `gorm:"foreignKey:CommunityID" json:"-"`
+	Community   Community `gorm:"foreignKey:CommunityID" json:"community"`
 	CommunityID uint      `json:"-"`
 }
 

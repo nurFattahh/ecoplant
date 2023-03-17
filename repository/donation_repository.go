@@ -36,6 +36,7 @@ func (r *DonationRepository) GetAllDonation(model *entity.PaginParam) ([]entity.
 		Model(entity.Donation{}).
 		Limit(model.Limit).
 		Offset(model.Offset).
+		Preload("Community").
 		Find(&donation).Error
 	if err != nil {
 		return nil, 0, err

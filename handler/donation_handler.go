@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
+	supabasestorageuploader "github.com/adityarizkyramadhan/supabase-storage-uploader"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 )
@@ -30,21 +31,43 @@ func (h *DonationHandler) CreateDonation(c *gin.Context) {
 		return
 	}
 
-	request := entity.CreateDonation{}
-	if err := c.ShouldBindJSON(&request); err != nil {
-		response.FailOrError(c, http.StatusUnprocessableEntity, "bad request", err)
+	supClient := supabasestorageuploader.NewSupabaseClient(
+		"https://oybixjqqpdbzadyzeeml.supabase.co",
+		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im95Yml4anFxcGRiemFkeXplZW1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzgwNzkwOTYsImV4cCI6MTk5MzY1NTA5Nn0.uxwKBWc9kl4IOxWJMrKUHxDnJbQ19JNgJfbo3oJYiAI",
+		"ecoplants",
+		"donasi",
+	)
+
+	filePicture, err := c.FormFile("picture")
+	if err != nil {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error getting picture", err)
+		return
+	}
+	linkPicture, err := supClient.Upload(filePicture)
+	if err != nil {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "Failed uploading picture", err)
 		return
 	}
 
+	name := c.PostForm("name")
+	regency := c.PostForm("regency")
+	district := c.PostForm("district")
+	target := c.PostForm("target")
+	parseTarget, _ := strconv.Atoi(target)
+	remainDay := c.PostForm("remain_day")
+	parseDay, _ := strconv.Atoi(remainDay)
+	plan := c.PostForm("plan")
+	news := c.PostForm("news")
+
 	donation := entity.Donation{
-		Name:        request.Name,
-		Regency:     request.Regency,
-		District:    request.District,
-		Target:      request.Target,
-		Picture:     request.Picture,
-		RemainDay:   request.RemainDay,
-		Plan:        request.Plan,
-		News:        request.News,
+		Name:        name,
+		Regency:     regency,
+		District:    district,
+		Target:      float64(parseTarget),
+		Picture:     linkPicture,
+		RemainDay:   parseDay,
+		Plan:        plan,
+		News:        news,
 		Community:   *community,
 		CommunityID: uint(parsedID),
 	}
@@ -55,7 +78,7 @@ func (h *DonationHandler) CreateDonation(c *gin.Context) {
 		return
 	}
 
-	response.Success(c, http.StatusCreated, "donation creation succeeded", request)
+	response.Success(c, http.StatusCreated, "donation creation succeeded", donation)
 }
 
 func (h *DonationHandler) GetAllDonation(c *gin.Context) {

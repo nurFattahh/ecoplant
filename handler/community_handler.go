@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
+	supabasestorageuploader "github.com/adityarizkyramadhan/supabase-storage-uploader"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,21 +20,49 @@ func NewCommunityHandler(repo *repository.CommunityRepository) CommunityHandler 
 }
 
 func (h *CommunityHandler) CreateCommunity(c *gin.Context) {
-	request := entity.CreateCommunity{}
-	if err := c.ShouldBindJSON(&request); err != nil {
-		response.FailOrError(c, http.StatusUnprocessableEntity, "bad request", err)
+	supClient := supabasestorageuploader.NewSupabaseClient(
+		"https://oybixjqqpdbzadyzeeml.supabase.co",
+		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im95Yml4anFxcGRiemFkeXplZW1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzgwNzkwOTYsImV4cCI6MTk5MzY1NTA5Nn0.uxwKBWc9kl4IOxWJMrKUHxDnJbQ19JNgJfbo3oJYiAI",
+		"ecoplants",
+		"komunitas",
+	)
+
+	filePicture, err := c.FormFile("picture")
+	if err != nil {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error getting picture", err)
+		return
+	}
+	linkPicture, err := supClient.Upload(filePicture)
+	if err != nil {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "Failed uploading picture", err)
+		return
+	}
+
+	name := c.PostForm("name")
+	email := c.PostForm("email")
+	phone := c.PostForm("phone")
+	description := c.PostForm("description")
+
+	fileDocument, err := c.FormFile("document")
+	if err != nil {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "error getting document", err)
+		return
+	}
+	linkDocument, err := supClient.Upload(fileDocument)
+	if err != nil {
+		response.FailOrError(c, http.StatusUnprocessableEntity, "Failed uploading picture", err)
 		return
 	}
 
 	community := entity.Community{
-		Picture:     request.Picture,
-		Name:        request.Name,
-		Email:       request.Email,
-		Phone:       request.Phone,
-		Description: request.Description,
-		Document:    request.Document,
+		Picture:     linkPicture,
+		Name:        name,
+		Email:       email,
+		Phone:       phone,
+		Description: description,
+		Document:    linkDocument,
 	}
-	err := h.Repository.CreateCommunity(&community)
+	err = h.Repository.CreateCommunity(&community)
 	if err != nil {
 		response.FailOrError(c, http.StatusInternalServerError, "Create Community failed", err)
 		return

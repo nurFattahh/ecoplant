@@ -50,6 +50,7 @@ func main() {
 	r.POST("/user/", userHandler.GetUserById)
 	r.GET("/user/bearer/", middleware.JwtMiddleware(), userHandler.GetUserByBearer)
 	r.PATCH("/user/update/", middleware.JwtMiddleware(), userHandler.UpdateUser)
+	r.PUT("/user/update/picture/", middleware.JwtMiddleware(), userHandler.UpdateProfilePicture)
 
 	//product
 	r.GET("/products/", productHandler.GetAllProduct)
